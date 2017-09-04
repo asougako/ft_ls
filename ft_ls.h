@@ -2,7 +2,7 @@
 #define FT_LS_H
 
 //INCLUDES//
-#include <sys/sysmacros.h>
+//#include <sys/sysmacros.h>
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <sys/xattr.h>
@@ -14,13 +14,12 @@
 #include <stdio.h>  //perror
 #include <errno.h>
 #include "libft/libft.h"
-#include "options/ft_options.h"
+#include "options/ft_getopt.h"
 #include "ft_ls.h"
 
 #include <time.h>
 
 #define pf(VAR, TYPE) printf(#VAR" = %"#TYPE"\n", VAR)
-
 
 
 //TYPEDEFS//
@@ -69,6 +68,7 @@ typedef struct		s_max_col_width
 		uint16_t	size_w;
 		uint16_t	date_w;
 }					t_max_col_width;
+
 
 //GLOBALS//
 uint64_t	opt;

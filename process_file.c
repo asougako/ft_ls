@@ -29,7 +29,7 @@ static bool    xattr(char *file)
         char    *xa;
 
         xa = ft_strnew(666);
-        if(listxattr(file, xa, 666) > 0)
+        if(listxattr(file, xa, 666, 0) > 0)
         {
                 has_xa = true;
         }

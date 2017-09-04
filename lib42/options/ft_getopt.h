@@ -1,19 +1,29 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_getopt.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: asougako <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/09/04 15:47:25 by asougako          #+#    #+#             */
+/*   Updated: 2017/09/04 15:51:26 by asougako         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #ifndef FT_GETOPT_H
 # define FT_GETOPT_H
 
-uint64_t    ft_getopt(int ac, char **av, t_list **lopt);
-int         av_sort(char **av);
-int         arg_comp(const char *arg1, const char *arg2);
-uint64_t    parse_opt(int ac, char **av, t_list **lopt);
-void        parse_short_opt(char *arg, uint64_t *opt);
-void        parse_long_opt(char **arg, t_list **lopt);
-void        clear_opt(int ac, char **av);
-void        ft_print_short_options(uint64_t params);
-void        ft_print_long_options(t_list *opt_lst);
+uint64_t		ft_getopt(int ac, char **av, t_list **lopt);
+static void		av_sort(char **av);
+static int		arg_comp(const char *arg1, const char *arg2);
+uint64_t		parse_opt(int ac, char **av, t_list **lopt);
+static void		parse_short_opt(char *arg, uint64_t *opt);
+static void		parse_long_opt(char **arg, t_list **lopt);
+static void		clear_opt(int ac, char **av);
+void			ft_print_short_options(uint64_t params);
+void			ft_print_long_options(t_list *opt_lst);
 
-enum	e_options{
-		//num
+enum			e_options{
 	opt_0 = 0x0000000000000001,
 	opt_1 = 0x0000000000000002,
 	opt_2 = 0x0000000000000004,
@@ -24,7 +34,6 @@ enum	e_options{
 	opt_7 = 0x0000000000000080,
 	opt_8 = 0x0000000000000100,
 	opt_9 = 0x0000000000000200,
-	//alpha maj
 	opt_A = 0x0000000000000400,
 	opt_B = 0x0000000000000800,
 	opt_C = 0x0000000000001000,
@@ -51,7 +60,6 @@ enum	e_options{
 	opt_X = 0x0000000200000000,
 	opt_Y = 0x0000000400000000,
 	opt_Z = 0x0000000800000000,
-	//alPha min
 	opt_a = 0x0000001000000000,
 	opt_b = 0x0000002000000000,
 	opt_c = 0x0000004000000000,

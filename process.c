@@ -125,7 +125,7 @@ bool	get_xattr(char *dir, char *file)
 		path = ft_strjoin(dir, "/");
 		path = ft_strjoin(path, file);
 		xa = ft_strnew(666);
-		if(listxattr(path, xa, 666) > 0)
+		if(listxattr(path, xa, 666, 0) > 0)
 		{
 				has_xa = true;
 		}

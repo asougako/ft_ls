@@ -53,7 +53,7 @@ uint32_t    line_len(t_tab_format *tab_format, t_file_infos **names)
 
         if (COLWIDTH != NULL)
                 ft_memdel((void**)&(COLWIDTH));
-        COLWIDTH = (int*)ft_memalloc(COLS * sizeof(*COLWIDTH));
+        COLWIDTH = (uint32_t*)ft_memalloc(COLS * sizeof(*COLWIDTH));
 
         line_index = 0;
         while (line_index < LINES)

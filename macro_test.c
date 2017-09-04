@@ -34,7 +34,7 @@ void test(void)
 #endif
 		printf("UNISTD_TEST\t");
 #ifdef _POSIX_ADVISORY_INFO
-		printf("\t_POSIX_ADVISORY_INFO = %ld\n", _POSIX_ADVISORY_INFO);
+		printf("\t_POSIX_ADVISORY_INFO = %d\n", _POSIX_ADVISORY_INFO);
 #else
 		printf("\t_POSIX_ADVISORY_INFO NOT DEFINED\n");
 #endif

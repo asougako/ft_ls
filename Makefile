@@ -17,8 +17,11 @@ SRC = ft_ls.c\
 	  sort_ctime.c\
 	  sort_mtime.c
 
+LIB = lib42/options/ft_getopt.a\
+	  lib42/libft/libft.a
+
 INC = -I lib42
-LIB = lib42/options/ft_options.a lib42/libft/libft.a
+
 FLAGS = -Werror -Wextra -Wall
 
 all:

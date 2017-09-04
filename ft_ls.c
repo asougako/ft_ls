@@ -167,7 +167,7 @@ int		main(int argc, char **argv)
 		/***TestS***/
 
 		/***Options***/
-		opt = ft_parse_options(argv, &long_opt);	//get options
+		opt = ft_getopt(argc, argv, &long_opt);	//get options
 		printf("Options:\n");
 		ft_print_short_options(opt);
 		ft_putendl("");
@@ -176,11 +176,11 @@ int		main(int argc, char **argv)
 		ft_putendl("");
 		/***Options***/
 
-		if (ft_get_long_opt(long_opt, "help") != NULL)
-		{
-				print_help();
-				return(0);
-		}
+//		if (ft_get_long_opt(long_opt, "help") != 0)
+//		{
+//				print_help();
+//				return(0);
+//		}
 
 		/***Arguments***/
 
