@@ -20,6 +20,9 @@
 
 #define FILE_LIST (t_list*)(*dirlst).content
 #define DIRECTORY (*(t_file_infos*)(*FILE_LIST).content).path
+
+#define ERROR_ACCESS (*(t_file_infos*)(*(t_list*)(*dirlst).content).content).error_access
+#define ERROR_ACC_STR (*(t_file_infos*)(*(t_list*)(*dirlst).content).content).name
 void    print_dir(t_list *dirlst, size_t index)
 {
     void	(*print_func)(t_list*);
@@ -30,19 +33,20 @@ void    print_dir(t_list *dirlst, size_t index)
 	print_func = &print_dir_short;
     while (dirlst!= NULL)
     {
-	printf("PRINTAGE!!!!! %p\n", dirlst);
-    	printf("%s: error access = %d\n",\
-    		(*(t_file_infos*)(*(t_list*)(*dirlst).content).content).path,\
-    		(*(t_file_infos*)(*(t_list*)(*dirlst).content).content).error_access);
-	printf("PRINTAGE!!!!! %p\n", dirlst);
-    		return;
-
 	if (DIRECTORY != NULL && index >= 3)
 	{
 	    ft_putstr(DIRECTORY);
 	    ft_putendl(":");
 	}
-	print_func(FILE_LIST);
+	if (ERROR_ACCESS)
+	{
+		ft_putendl(ERROR_ACC_STR);
+	}
+	else
+	{
+	    process_opt(FILE_LIST);
+	    print_func(FILE_LIST);
+	}
 	dirlst = (*dirlst).next;
 	if (dirlst != NULL)
 	    ft_putendl("");
@@ -80,18 +84,18 @@ void	print_col(char *field, uint16_t width)
 
 char	*get_block_total(t_list *link)
 {
-	char		*ret;
-	uint64_t	total;
+    char		*ret;
+    uint64_t	total;
 
-	total = 0;
-	while (link != NULL)
-	{
-	    if ((*CONTENT).printable)
-		total += (*(*CONTENT).stat).st_blocks;
-	    link = (*link).next;
-	}
-	ret = ft_itoa(total);
-	return(ret);
+    total = 0;
+    while (link != NULL)
+    {
+	if ((*CONTENT).printable)
+	    total += (*(*CONTENT).stat).st_blocks;
+	link = (*link).next;
+    }
+    ret = ft_itoa(total);
+    return(ret);
 }
 
 
@@ -121,10 +125,10 @@ void	print_dir_long(t_list *file_lst)
     {
 	if (FILE_PRINT == true)
 	{
-	if (OPT(i))
-	{
-	    print_col(FILE_INODE, INODE_WIDTH);
-	}
+	    if (OPT(i))
+	    {
+	    	print_col(FILE_INODE, INODE_WIDTH);
+	    }
 	    print_col(FILE_MODE, 11);
 	    print_col(FILE_LINK, LINK_WIDTH);
 	    if (!(OPT(g)))

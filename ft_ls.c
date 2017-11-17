@@ -166,12 +166,11 @@ t_list	*lst_cur_dir_error(char *strerror, char *path)
 	file_info = NULL;
 
 	file_info = (t_file_infos*)ft_memalloc(sizeof(*file_info));
-	(*file_info).path= str_error_access(strerror, path);
+	(*file_info).path = ft_strdup(path);
+	(*file_info).name = str_error_access(strerror, path);
 	(*file_info).error_access = true;
 	file_link = ft_lstnew(NULL, sizeof(file_info));
 	(*file_link).content = file_info;
-	printf("name1 = %s\n", (*file_info).path);
-	printf("name2 = %s\n", (*(t_file_infos*)(*file_link).content).path);
 	return(file_link);
 }
 
@@ -186,7 +185,6 @@ void    dirlst_add_dir(t_list **dirlst, char *path)
     if ((dir_stream = opendir(path)) == NULL)
     {
 	new_file_lst = lst_cur_dir_error(strerror(errno), path);
-	printf("name3 = %s\n", (*(t_file_infos*)(*new_file_lst).content).path);
     }
     else
     {
@@ -199,11 +197,9 @@ void    dirlst_add_dir(t_list **dirlst, char *path)
     //Create dir link
     new_dir_lnk = ft_lstnew(NULL, sizeof(new_file_lst));
     (*new_dir_lnk).content = new_file_lst;
-    printf("name4 = %s\n", (*(t_file_infos*)(*(t_list*)(*new_dir_lnk).content).content).path);
 
     //Add dir link to dirlst
     ft_lstadd_tail(dirlst, new_dir_lnk);
-    printf("name5 = %s\n", (*(t_file_infos*)(*(t_list*)(**dirlst).content).content).path);
 
     //Recursive
     recursive(dirlst, new_file_lst, path);
@@ -270,7 +266,12 @@ size_t	get_dirlst(char **argv, t_list **dirlst)
 #undef PATH
 #undef FILE_MODE
 
-void	process_opt(t_list *dirlst)
+void	process_opt(t_list *file_list)
+{
+	process_printable(file_list);
+}
+
+void	process_opt_old(t_list *dirlst)
 {
     t_list *file_list;
 
@@ -323,7 +324,7 @@ int		main(int argc, char **argv)
 
 
     /*	PROCESS OPT*/
-    process_opt(dirlst);
+//    process_opt(dirlst);		//moved to print_dir()
     /*__PROCESS OPT*/
 
 

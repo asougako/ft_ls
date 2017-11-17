@@ -12,3 +12,8 @@ ft_ls
 # OS generated files #
 ######################
 .DS_Store
+
+# Log #
+#######
+*.dSYM
+
