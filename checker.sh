@@ -2,9 +2,9 @@
 
 clear
 make noflags
-./ft_ls $@
+time ./ft_ls $@
 echo ""
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 echo ""
-ls $@
+time ls $@
 

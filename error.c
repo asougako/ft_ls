@@ -1,23 +1,24 @@
 
 #include "ft_ls.h"
 
-void    print_error_access(char *err, char *path)
+char *str_error_access(char *err, char *path)
 {
         char    *error_mess;
         char    *tmp;
 
-        error_mess = ft_strjoin("ft_ls", ": cannot access ");
-        tmp = error_mess;
-        error_mess = ft_strjoin(error_mess, path);
-        ft_strdel(&tmp);
+        error_mess = ft_strjoin("ft_ls: ", path);
         tmp = error_mess;
         error_mess = ft_strjoin(error_mess, ": ");
         ft_strdel(&tmp);
         tmp = error_mess;
         error_mess = ft_strjoin(error_mess, err);
-        ft_putendl(error_mess);
         ft_strdel(&tmp);
-        ft_strdel(&error_mess);
+        return(error_mess);
+}
+
+void    print_error_access(char *err, char *path)
+{
+	ft_putendl(str_error_access(err, path));
 }
 
 void	print_malloc_error(void)

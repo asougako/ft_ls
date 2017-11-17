@@ -2,7 +2,9 @@
 #define FT_LS_H
 
 //INCLUDES//
-//#include <sys/sysmacros.h>
+#ifdef linux
+#include <sys/sysmacros.h>
+#endif
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <sys/xattr.h>
@@ -44,6 +46,7 @@ typedef struct		s_file_stat
 		size_t		name_len;
 		bool		has_xattr;
 		bool		printable;
+		bool		error_access;
 
 		//Stringified
 		char		*str_inode;
@@ -97,8 +100,6 @@ int64_t		rev_mtime_sort(void *content1, void *content2);
 int64_t		no_sort(void *content1, void *content2);
 
 //print
-void	print_error_access(char *err, char *path);
-void    print_malloc_error(void);
 void    print_dir(t_list *file_lst, size_t index);
 void    print_dir_short(t_list *head);
 void    print_dir_long(t_list *head);
@@ -137,5 +138,10 @@ void    process_opt(t_list *l_dir_infos);
 void    process_opt_a(t_list *l_dir_info);
 void    process_opt_A(t_list *l_dir_info);
 void    process_opt_B(t_list *l_dir_info);
+
+//error
+char	*str_error_access(char *err, char *path);
+void	print_error_access(char *err, char *path);
+void    print_malloc_error(void);
 
 #endif

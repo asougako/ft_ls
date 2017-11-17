@@ -101,8 +101,8 @@ t_file_infos	*get_file_infos(char *directory, char *file)
     }
     STRUCT_NAME = ft_strdup(file);
     STRUCT_STAT = get_file_stat(directory, file);
-    //STRUCT_INODE = (*STRUCT_STAT).st_ino;
-//    STRUCT_MODE = (*STRUCT_STAT).st_mode;
+//  STRUCT_INODE = (*STRUCT_STAT).st_ino;
+//  STRUCT_MODE = (*STRUCT_STAT).st_mode;
     STRUCT_XATTR = get_xattr(directory, STRUCT_NAME);
     STRUCT_NAME_LEN = ft_strlen(STRUCT_NAME);
 
@@ -120,8 +120,8 @@ t_file_infos	*get_file_infos(char *directory, char *file)
 #define FILE_NAME		(*s_dir).d_name
 t_list  *lst_cur_dir(DIR *dir_stream, char *directory)
 {
-    t_list			*file_list;
-    t_list			*file_link;
+    t_list		*file_list;
+    t_list		*file_link;
     t_file_infos	*file_info;
     t_dirent		*s_dir;
 

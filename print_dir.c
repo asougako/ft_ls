@@ -1,16 +1,16 @@
 
 #include "ft_ls.h"
 
-#define CONTENT (t_file_infos*)(*link).content
-#define FILE_NAME (*CONTENT).name
-#define FILE_PRINT  (*CONTENT).printable
-#define HAS_XATTR (*CONTENT).has_xattr
-#define FILE_TYPE (*(*CONTENT).stat).st_mode
-#define FILE_BLOCKS (*(*CONTENT).stat).st_blocks
+#define CONTENT		(t_file_infos*)(*link).content
+#define FILE_NAME	(*CONTENT).name
+#define FILE_PRINT	(*CONTENT).printable
+#define HAS_XATTR	(*CONTENT).has_xattr
+#define FILE_TYPE	(*(*CONTENT).stat).st_mode
+#define FILE_BLOCKS	(*(*CONTENT).stat).st_blocks
 
-#define FILE_INODE   (*CONTENT).str_inode
-#define FILE_MODE   (*CONTENT).str_mode
-#define FILE_LINK   (*CONTENT).str_link
+#define FILE_INODE	(*CONTENT).str_inode
+#define FILE_MODE	(*CONTENT).str_mode
+#define FILE_LINK	(*CONTENT).str_link
 #define FILE_USER	(*CONTENT).str_user
 #define FILE_GROUP	(*CONTENT).str_group
 #define FILE_MAJOR	(*CONTENT).str_major
@@ -30,6 +30,13 @@ void    print_dir(t_list *dirlst, size_t index)
 	print_func = &print_dir_short;
     while (dirlst!= NULL)
     {
+	printf("PRINTAGE!!!!! %p\n", dirlst);
+    	printf("%s: error access = %d\n",\
+    		(*(t_file_infos*)(*(t_list*)(*dirlst).content).content).path,\
+    		(*(t_file_infos*)(*(t_list*)(*dirlst).content).content).error_access);
+	printf("PRINTAGE!!!!! %p\n", dirlst);
+    		return;
+
 	if (DIRECTORY != NULL && index >= 3)
 	{
 	    ft_putstr(DIRECTORY);

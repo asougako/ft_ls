@@ -155,31 +155,55 @@ char *join_slash(char *dir, char *file)
 
 }
 
+t_list	*lst_cur_dir_error(char *strerror, char *path)
+{
+	t_list		*file_lst;
+	t_list		*file_link;
+	t_file_infos	*file_info;
+
+	file_lst = NULL;
+	file_link = NULL;
+	file_info = NULL;
+
+	file_info = (t_file_infos*)ft_memalloc(sizeof(*file_info));
+	(*file_info).path= str_error_access(strerror, path);
+	(*file_info).error_access = true;
+	file_link = ft_lstnew(NULL, sizeof(file_info));
+	(*file_link).content = file_info;
+	printf("name1 = %s\n", (*file_info).path);
+	printf("name2 = %s\n", (*(t_file_infos*)(*file_link).content).path);
+	return(file_link);
+}
+
 void    dirlst_add_dir(t_list **dirlst, char *path)
 {
     t_list      *new_dir_lnk = NULL;
     t_list      *new_file_lst = NULL;
     DIR         *dir_stream;
 
+
     //Open dir stream
     if ((dir_stream = opendir(path)) == NULL)
     {
-	//print_error_access();
-	exit(1);
+	new_file_lst = lst_cur_dir_error(strerror(errno), path);
+	printf("name3 = %s\n", (*(t_file_infos*)(*new_file_lst).content).path);
     }
-
-    //List files
-    new_file_lst = lst_cur_dir(dir_stream, path);
+    else
+    {
+    	//List files
+    	new_file_lst = lst_cur_dir(dir_stream, path);
+    	//Close dir stream
+    	closedir(dir_stream);
+    }
 
     //Create dir link
     new_dir_lnk = ft_lstnew(NULL, sizeof(new_file_lst));
     (*new_dir_lnk).content = new_file_lst;
+    printf("name4 = %s\n", (*(t_file_infos*)(*(t_list*)(*new_dir_lnk).content).content).path);
 
     //Add dir link to dirlst
     ft_lstadd_tail(dirlst, new_dir_lnk);
-
-    //Close dir stream
-    closedir(dir_stream);
+    printf("name5 = %s\n", (*(t_file_infos*)(*(t_list*)(**dirlst).content).content).path);
 
     //Recursive
     recursive(dirlst, new_file_lst, path);
