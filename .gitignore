@@ -1,0 +1,14 @@
+# Compiled source #
+###################
+ft_ls
+*.a
+*.o
+*.so
+
+# Backup #
+##########
+*.swp
+
+# OS generated files #
+######################
+.DS_Store
