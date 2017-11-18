@@ -243,9 +243,13 @@ size_t	get_dirlst(char **argv, t_list **dirlst)
     index = 1;
     while (PATH)
     {
-	stat(PATH, &stat_buff);
-	if (S_ISDIR(FILE_MODE))
+	if (stat(PATH, &stat_buff) == -1)
 	{
+		print_error_access(strerror(errno), PATH);
+	}
+	else if (S_ISDIR(FILE_MODE))
+	{
+		printf("1\t%s = %x (%d)\n", PATH, FILE_MODE, S_ISLNK(FILE_MODE));
 	    if (OPT(d))
 	    {
 	    	dirlst_add_file(dirlst, PATH);

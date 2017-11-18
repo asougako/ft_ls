@@ -80,6 +80,25 @@ void recursive(t_list **dirlst, t_list *file_lst, char *path)
 #undef FILE_NAME
 #undef FILE_NAME_ISNT
 
+
+#define LINK_BUFF_SIZE PATH_MAX
+char	*get_link_name(char *path)
+{
+	char *ret;
+	char *tmp;
+	char *buff;
+
+	buff = ft_strnew(LINK_BUFF_SIZE);
+	if (readlink(path, buff, LINK_BUFF_SIZE) < 0)
+	{
+		print_error_access(strerror(errno), path);
+		return(path);
+	}
+	ret = ft_strjoin(path, " -> ");
+	ret = ft_strjoin(ret, buff);
+	return(ret);
+}
+
 #define STRUCT_PATH		(*file_info).path
 #define STRUCT_NAME   	(*file_info).name
 #define STRUCT_NAME_LEN	(*file_info).name_len
@@ -95,14 +114,22 @@ t_file_infos	*get_file_infos(char *directory, char *file)
     file_info = (t_file_infos*)ft_memalloc(sizeof(*file_info));
 
     //Filling
+    STRUCT_STAT = get_file_stat(directory, file);
     if (directory != NULL)
     {
 	STRUCT_PATH = ft_strdup(directory);
     }
-    STRUCT_NAME = ft_strdup(file);
-    STRUCT_STAT = get_file_stat(directory, file);
-//  STRUCT_INODE = (*STRUCT_STAT).st_ino;
-//  STRUCT_MODE = (*STRUCT_STAT).st_mode;
+    printf("%s = %x (%d)\n", file, (*STRUCT_STAT).st_mode, S_ISLNK((*STRUCT_STAT).st_mode));
+    if (S_ISLNK((*STRUCT_STAT).st_mode))
+    {
+	STRUCT_NAME = get_link_name(join_slash(directory, file));
+    }
+    else
+    {
+    	STRUCT_NAME = ft_strdup(file);
+    }
+    //  STRUCT_INODE = (*STRUCT_STAT).st_ino;
+    //  STRUCT_MODE = (*STRUCT_STAT).st_mode;
     STRUCT_XATTR = get_xattr(directory, STRUCT_NAME);
     STRUCT_NAME_LEN = ft_strlen(STRUCT_NAME);
 
