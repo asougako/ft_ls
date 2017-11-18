@@ -3,7 +3,7 @@
 /*	TO DO
 	- hide hour if date is more than 6 months ago.
 	- sort when input multipe directories
-	- with -d, '.' directory dont output
+	- recursive loop protect (inode check?)
 
 */
 
@@ -239,17 +239,27 @@ size_t	get_dirlst(char **argv, t_list **dirlst)
 {
     struct stat	stat_buff;
     size_t		index;
+    int	(*stat_func)(const char *restrict, struct stat *restrict);
 
+
+    if (OPT(H))
+    {
+	stat_func = &stat;
+    }
+    else
+    {
+	stat_func = &lstat;
+    }
     index = 1;
     while (PATH)
     {
-	if (stat(PATH, &stat_buff) == -1)
+	if (stat_func(PATH, &stat_buff) == -1)
 	{
-		print_error_access(strerror(errno), PATH);
+	    print_error_access(strerror(errno), PATH);
 	}
 	else if (S_ISDIR(FILE_MODE))
 	{
-		printf("1\t%s = %x (%d)\n", PATH, FILE_MODE, S_ISLNK(FILE_MODE));
+	    //printf("1\t%s = %o (%d)\n", PATH, FILE_MODE, S_ISLNK(FILE_MODE));
 	    if (OPT(d))
 	    {
 	    	dirlst_add_file(dirlst, PATH);
@@ -272,7 +282,7 @@ size_t	get_dirlst(char **argv, t_list **dirlst)
 
 void	process_opt(t_list *file_list)
 {
-	process_printable(file_list);
+    process_printable(file_list);
 }
 
 void	process_opt_old(t_list *dirlst)
@@ -295,6 +305,8 @@ void	implicit_opts(void)
     opts = sopt(NULL);
     OPT(f) ? opts.opt |= opt_a : 0;
     OPT(n) ? opts.opt |= opt_l : 0;
+    OPT(d) ? opts.opt |= opt_a : 0;
+    OPT(L) ? opts.opt |= opt_H : 0;
     sopt(&opts);
 }
 
@@ -303,17 +315,17 @@ int		main(int argc, char **argv)
     t_sopt	tmp;
     t_list	*dirlst;
     size_t	index;
-
+    char 	**defaut;
 
     /*	GET OPT	*/
     tmp = ft_getopt(argc, argv);		//get options
     sopt(&tmp);							//put options in fake global
-    printf("Short opt:\n");
-    ft_print_short_options(sopt(NULL).opt);
-    printf("\nLong opt:\n");
-    ft_print_long_options(sopt(NULL).lopt);
-    ft_putendl("");
-    ft_putendl("");
+//    printf("Short opt:\n");
+//    ft_print_short_options(sopt(NULL).opt);
+//    printf("\nLong opt:\n");
+//    ft_print_long_options(sopt(NULL).lopt);
+//    ft_putendl("");
+//    ft_putendl("");
     /*__GET OPT	*/
 
     /*implicit_opts*/
@@ -323,12 +335,26 @@ int		main(int argc, char **argv)
 
     /*GET_DIRLST*/
     dirlst = NULL;
-    index = get_dirlst(argv, &dirlst);	//list all dirs, put orphans files in a fake dir.
+    index = 0;
+    while (*(argv + ++index) != NULL);
+    if (index == 1)
+    {
+    	defaut = (char**)ft_memalloc(sizeof(*defaut) * 3);
+    	*(defaut + 1) = ft_strdup(".");
+    	*(defaut + 2) = NULL;
+    	index = get_dirlst(defaut, &dirlst);	//list all dirs, put orphans files in a fake dir.
+    	ft_strdel(defaut + 1);
+    	ft_memdel((void**)&defaut);
+    }
+    else
+    {
+    	index = get_dirlst(argv, &dirlst);	//list all dirs, put orphans files in a fake dir.
+    }
     /*__GET_DIRLST*/
 
 
     /*	PROCESS OPT*/
-//    process_opt(dirlst);		//moved to print_dir()
+    //    process_opt(dirlst);		//moved to print_dir()
     /*__PROCESS OPT*/
 
 

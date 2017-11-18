@@ -128,8 +128,8 @@ else
 	@$(ECHO) "Created library \033[32m$@\033[0m."
 endif
 
-%.o: %.c
-	@$(CC) $(DF) $(CF) -c $(SRC_DIR)$^ -I $(HEAD_DIR)
+%.o: $(SRC_DIR)%.c
+	@$(CC) $(DF) $(CF) -c $^ -I $(HEAD_DIR)
 	@$(ECHO) "Created object \033[32m$@\033[0m."
 
 clean:

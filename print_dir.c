@@ -26,21 +26,23 @@
 void    print_dir(t_list *dirlst, size_t index)
 {
     void	(*print_func)(t_list*);
+    int		index2;
 
+    index = 0;
     if (OPT(l))
 	print_func = &print_dir_long;
     else
 	print_func = &print_dir_short;
     while (dirlst!= NULL)
     {
-	if (DIRECTORY != NULL && index >= 3)
+	if (index2 > 0)
 	{
 	    ft_putstr(DIRECTORY);
 	    ft_putendl(":");
 	}
 	if (ERROR_ACCESS)
 	{
-		ft_putendl(ERROR_ACC_STR);
+	    ft_putendl(ERROR_ACC_STR);
 	}
 	else
 	{
@@ -50,6 +52,7 @@ void    print_dir(t_list *dirlst, size_t index)
 	dirlst = (*dirlst).next;
 	if (dirlst != NULL)
 	    ft_putendl("");
+	    index2++;
     }
 }
 #undef FILE_LIST
@@ -110,7 +113,7 @@ char	*get_block_total(t_list *link)
 #define  DATE_WIDTH (*colw).date_w
 void	print_dir_long(t_list *file_lst)
 {
-    t_list			*link;
+    t_list		*link;
     t_max_col_width	*colw;
 
     colw = (t_max_col_width*)ft_memalloc(sizeof(*colw));
@@ -138,20 +141,24 @@ void	print_dir_long(t_list *file_lst)
     	    }
 	    if (!(OPT(o)))
 	    {
-	    	print_col(FILE_GROUP, GROUP_WIDTH);
-    	    	ft_putchar(0x20);
+	    	print_col(FILE_GROUP, GROUP_WIDTH + 1);
     	    }
+
+
+
 	    if (S_ISCHR(FILE_TYPE) || S_ISBLK(FILE_TYPE))
 	    {
-		print_col(FILE_MAJOR, MAJOR_WIDTH);
-		print_col(FILE_MINOR, MINOR_WIDTH);
+		print_col(FILE_MAJOR, 4);
+		print_col(FILE_MINOR, 3);
 	    }
 	    else
 	    {
 		print_col(FILE_SIZE, SIZE_WIDTH);
 	    }
-	    print_col(FILE_DATE, DATE_WIDTH);
 
+
+
+	    print_col(FILE_DATE, DATE_WIDTH);
 	    ft_putendl(FILE_NAME);
 	}
 	link = (*link).next;
@@ -193,13 +200,13 @@ void	get_long_infos(t_list *head, t_max_col_width *colw)
 	    if (S_ISCHR(FILE_TYPE) || S_ISBLK(FILE_TYPE))
 	    {
 		(*CONTENT).str_major = get_major(link);
-		if ((tmp = ft_strlen((*CONTENT).str_major)) > MAJOR_WIDTH)
-		    MAJOR_WIDTH = tmp;
+//		if ((tmp = ft_strlen((*CONTENT).str_major)) > MAJOR_WIDTH)
+//		    MAJOR_WIDTH = tmp;
 		(*CONTENT).str_minor = get_minor(link);
-		if ((tmp2 = ft_strlen((*CONTENT).str_minor)) > MINOR_WIDTH)
-		    MINOR_WIDTH = tmp2;
+//		if ((tmp2 = ft_strlen((*CONTENT).str_minor)) > MINOR_WIDTH)
+//		    MINOR_WIDTH = tmp2;
 		if ((tmp + tmp2 ) > SIZE_WIDTH)
-		    SIZE_WIDTH = tmp + tmp2;
+		    SIZE_WIDTH = 8;
 	    }
 	    else
 	    {

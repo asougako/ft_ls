@@ -43,6 +43,7 @@ typedef struct		s_file_stat
 		t_stat		*stat;
 //		ino_t		inode;
 //		mode_t		mode;
+		unsigned char	type;
 		char		*path;
 		char		*name;
 		size_t		name_len;

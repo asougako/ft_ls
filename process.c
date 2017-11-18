@@ -23,6 +23,7 @@ t_stat	*get_file_stat(char *directory, char *file)
 {
     t_stat	*file_stat;
     char 	*path;
+    int		(*stat_func)(const char *restrict, struct stat *restrict);
     //		char	*error_str;
 
     file_stat = NULL;
@@ -37,7 +38,11 @@ t_stat	*get_file_stat(char *directory, char *file)
     {
 	path = ft_strdup(file);
     }
-    if (stat(path, file_stat) != 0)
+    if (OPT(L))
+    	stat_func = &stat;
+    else
+    	stat_func = &lstat;
+    if (stat_func(path, file_stat) != 0)
     {
 	print_error_access(strerror(errno), path);
 	return(NULL);
@@ -66,9 +71,12 @@ void recursive(t_list **dirlst, t_list *file_lst, char *path)
 		//exclude '.' & '..'
 		if (FILE_NAME_ISNT(".") != 0 && FILE_NAME_ISNT("..") != 0)
 		{
-		    file_path = join_slash(path, FILE_NAME);
-		    dirlst_add_dir(dirlst, file_path);
-		    ft_memdel((void**)&file_path);
+		    if (*(FILE_NAME) != '.' || (OPT(a) || OPT(A)))
+		    {
+		    	    file_path = join_slash(path, FILE_NAME);
+		    	    dirlst_add_dir(dirlst, file_path);
+		    	    ft_memdel((void**)&file_path);
+		    }
 		}
 	    }
 	    file_lst = (*file_lst).next;
@@ -82,21 +90,25 @@ void recursive(t_list **dirlst, t_list *file_lst, char *path)
 
 
 #define LINK_BUFF_SIZE PATH_MAX
-char	*get_link_name(char *path)
+char	*get_link_name(char *dir, char *file)
 {
-	char *ret;
-	char *tmp;
-	char *buff;
+    char *ret;
+    char *tmp;
+    char *buff;
 
-	buff = ft_strnew(LINK_BUFF_SIZE);
-	if (readlink(path, buff, LINK_BUFF_SIZE) < 0)
-	{
-		print_error_access(strerror(errno), path);
-		return(path);
-	}
-	ret = ft_strjoin(path, " -> ");
-	ret = ft_strjoin(ret, buff);
-	return(ret);
+    tmp = join_slash(dir, file);
+    buff = ft_strnew(LINK_BUFF_SIZE);
+    if (readlink(tmp, buff, LINK_BUFF_SIZE) < 0)
+    {
+	print_error_access(strerror(errno), file);
+	return(file);
+    }
+    ft_strdel(&tmp);
+    ret = ft_strjoin(file, " -> ");
+    tmp = ret;
+    ret = ft_strjoin(ret, buff);
+    ft_strdel(&tmp);
+    return(ret);
 }
 
 #define STRUCT_PATH		(*file_info).path
@@ -119,10 +131,9 @@ t_file_infos	*get_file_infos(char *directory, char *file)
     {
 	STRUCT_PATH = ft_strdup(directory);
     }
-    printf("%s = %x (%d)\n", file, (*STRUCT_STAT).st_mode, S_ISLNK((*STRUCT_STAT).st_mode));
     if (S_ISLNK((*STRUCT_STAT).st_mode))
     {
-	STRUCT_NAME = get_link_name(join_slash(directory, file));
+	STRUCT_NAME = get_link_name(directory, file);
     }
     else
     {
