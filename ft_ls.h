@@ -26,6 +26,8 @@
 #define pf(VAR, TYPE) printf(#VAR" = %"#TYPE"\n", VAR)
 #define flag(CHAR) sopt(NULL).opt & opt_##CHAR
 #define OPT(OPTION)  sopt(NULL).opt & opt_##OPTION
+#define NORESET 0
+#define RESET 1
 //TYPEDEFS//
 typedef enum e_bool
 {
@@ -50,6 +52,7 @@ typedef struct		s_file_stat
 		bool		has_xattr;
 		bool		printable;
 		bool		error_access;
+		char		*error_str;
 
 		//Stringified
 		char		*str_inode;
@@ -126,12 +129,12 @@ void    printable_opt_A(t_list *l_file_info);
 void    printable_opt_B(t_list *l_file_info);
 void    printable_opt_a(t_list *l_file_info);
 
-
+int     check_loop(ino_t new_inode, bool reset);
 void    dirlst_add_dir(t_list **dirlst, char *path);
 int		process_dir(char *directory);
 int     process_file(char *file_path);
 t_list	*lst_cur_dir(DIR *dir_stream, char *directory);
-t_stat	*get_file_stat(char *directory, char *file);
+t_stat	*get_file_stat(char *directory, char *file, t_file_infos *file_info);
 void	lst_destruct(void *cont, size_t size);
 void	recursive(t_list **dirlst, t_list *l_dir_info, char *path);
 
@@ -146,5 +149,6 @@ void    process_opt_B(t_list *l_dir_info);
 char	*str_error_access(char *err, char *path);
 void	print_error_access(char *err, char *path);
 void    print_malloc_error(void);
+char	*str_error_loop(char *directory, char *file);
 
 #endif

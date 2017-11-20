@@ -39,7 +39,7 @@ int main(int argc, char **argv)
 	while ((dirs = readdir(dirp)) != NULL)
 	{
 		stat(FILE_NAME, &sb);
-		printf("%s >> %x\n", FILE_NAME, sb.st_mode);
+		printf("\n%s >> %llo >> %d\n", FILE_NAME, sb.st_mode & S_IFMT, S_ISDIR(sb.st_mode));
 		switch(FILE_TYPE)
 		{
 			case 4:
