@@ -1,11 +1,11 @@
-#!/bin/zsh
+#!/bin/bash
 
 clear
-make noflags
+make noflags &&
 clear
-time ./ft_ls $@
+./ft_ls $@
 echo ""
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 echo ""
-time ls $@
+ls $@
 

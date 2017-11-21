@@ -10,10 +10,11 @@ LIB = 	lib/parsing/ft_getopt.a\
 		lib/libft/libft.a
 RM = /bin/rm -f
 ECHO = echo -e
-SRC = ft_ls.c		process.c		error.c			sort_atime.c\
-	  sort_ctime.c	sort_name.c		sort_size.c		sort.c\
-	  sort_mtime.c	sort_no.c		options.c		print_opt.c\
-	  print_dir.c	print_short.c
+#	|		|		|		|
+SRC =	ft_ls.c		options.c	argv_sort.c	error.c\
+	process_file.c	print.c		sort.c		sort_ctime.c\
+	sort_name.c	sort_size.c	sort_atime.c	sort_mtime.c\
+	sort_no.c	sort_btime.c
 
 
 all: $(NAME)

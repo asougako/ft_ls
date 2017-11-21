@@ -1,10 +1,9 @@
-#include "ft_ls.h"
-
 /*	TO DO
 	- hide hour if date is more than 6 months ago or in the future
 	- sort when input multipe directories
 	- recursive loop protect (inode check?)
-
+	- add -@ option (currently -e)
+	- sort funcs buf=gged without -l
  */
 
 
@@ -61,8 +60,8 @@
   graphical order.
   x	-u	Use time of last access, instead of last modification of the file for sorting (-t) or long
   printing (-l).
-  -U	Use time of file creation, instead of last modification for sorting (-t) or long output (-l).
-  -x	The same as -C, except that the multi-column output is produced with entries sorted across,
+  x  -U	Use time of file creation, instead of last modification for sorting (-t) or long output (-l).
+  x  -x	The same as -C, except that the multi-column output is produced with entries sorted across,
   rather than down, the columns.
 
   The -1, -C, -x, and -l options all override each other; the last one specified determines the format
@@ -83,291 +82,255 @@
   -i, -s, and -l options.
  */
 
-/*	TO BE DELETED*/
-#define DIR_CONTENT  (t_file_infos*)(*(t_list*)(*dir).content).content
-#define FILE_CONTENT (*(t_file_infos*)(*file)).content
-void	print_dirlst(t_list *dirlst)
+#include "ft_ls.h"
+
+char	*path_join(char *dir, char *file)
 {
-	t_list	*dir = NULL;
-	t_list	*file = NULL;
+    char	*path;
+    size_t	index;
 
-	dir = dirlst;
+    index = 0;
+    path = ft_strnew(1 + ft_strlen(dir) + ft_strlen(file));
+    ft_strcpy(path + index, dir);
+    index += ft_strlen(dir);
+    if (*(dir + ft_strlen(dir) - 1) != '/')
+    {
+    	ft_strcpy(path + index, "/");
+    	index += 1;
+    }
+    ft_strcpy(path + index, file);
+    return(path);
+}
 
-	for (dir = dirlst; dir != NULL; dir = (*dir).next)
+#define FILE_NAME (*(t_xstat*)(*file_lst).content).name
+#define FILE_NAME_ISNT(name) ft_strcmp(FILE_NAME, name)
+#define FILE_DIR  (*(t_xstat*)(*file_lst).content).path
+#define FILE_MODE (*(*(t_xstat*)(*file_lst).content).stat).st_mode
+
+#define REGISTERED_INODE *(ino_t*)(*tmp).content
+int             check_loop(ino_t new_inode, bool reset)
+{
+    static t_list	*ino_lst;
+    t_list		*ino_lnk;
+    t_list		*tmp;
+
+    if (reset == RESET)
+    {
+        //add lst_del();
+        ino_lst = NULL;
+    }
+
+    ino_lnk = NULL;
+    tmp = ino_lst;
+    while (tmp != NULL)
+    {
+        if (REGISTERED_INODE == new_inode)
+        {
+            return(LOOP_ERROR);
+        }
+        tmp = (*tmp).next;
+    }
+    ino_lnk = ft_lstnew(&new_inode, sizeof(ino_t));
+    ft_lstadd(&ino_lst, ino_lnk);
+    return(0);
+}
+#undef REGISTERED_INODE
+
+
+void	recursive(t_list *file_lst)
+{
+    char	*path;
+    t_stat	fstat;
+    int		(*stat_func)(const char *restrict, struct stat *restrict);
+
+    if (OPT(R))
+    {
+    	if (OPT(L))
+      	    stat_func = &stat;
+    	else
+            stat_func = &lstat;
+
+    	while (file_lst != NULL)
+    	{
+	    	    printf("@@@@RECURSIVE CALL: %s\n", FILE_NAME);
+    	    if (FILE_NAME_ISNT(".") != 0 && FILE_NAME_ISNT("..") != 0)
+    	    {
+	    	path = path_join(FILE_DIR, FILE_NAME);
+	    	if (stat_func(path, &fstat) != 0)
+	    	{
+	    	    printf("cant stat %s\n", path);		
+	    	}
+	    	else if (S_ISDIR(FILE_MODE))
+	    	{
+	    	    if (check_loop(fstat.st_ino, NORESET))
+	    	    {
+			printf("%s: loop error\n", FILE_NAME);
+	    	    }
+	    	    else
+	    	    {
+	    	    	ft_putendl("");
+	    	    	ft_putstr(path);
+	    	    	ft_putendl(":");
+	    	    	read_dir(&path);
+	    	    }
+    	    	}
+    	    }
+	    file_lst = (*file_lst).next;
+    	}
+    }
+}
+#undef FILE_NAME
+#undef FILE_DIR
+
+#define FILE_NAME name
+int	is_printable(char *name)
+{
+    if (OPT(a))
+    {
+	return(true);
+    }
+    else if (OPT(A))
+    {
+    	if (FILE_NAME_ISNT(".") != 0 && FILE_NAME_ISNT("..") != 0)
+    	{
+    	    return(true);
+    	}
+    }
+    else if (*(name + 0) != '.')
+    {
+    	return(true);
+    }
+    return(false);
+}
+#undef FILE_NAME
+
+#define FILE_NAME (*direntry).d_name
+void	read_dir(char **dir)
+{
+    DIR		*dirstream;
+    t_dirent	*direntry;
+    t_list	*file_lst;
+    t_list	*error_lst;
+    t_stat	fstat;
+    char	*path;
+    char	*file_name;
+    int         (*stat_func)(const char *restrict, struct stat *restrict);
+
+
+    dirstream = NULL;
+    direntry = NULL;
+    error_lst = NULL;
+    file_lst = NULL;
+    //fstat = NULL;
+    path = NULL;
+    if (OPT(L))
+	stat_func = &stat;
+    else
+	stat_func = &lstat;
+    if ((dirstream = opendir(*dir)) == NULL)
+    {
+//	printf("read_dir(): opendir: error\n");
+	ft_putendl_fd(str_error_access(strerror(errno), *dir), 2);
+	return;
+    }
+    while ((direntry = readdir(dirstream)) != NULL)
+    {
+    	if (is_printable(FILE_NAME))
+    	{
+    	    file_name = ft_strdup(FILE_NAME);
+     	    path = path_join(*dir, file_name);
+//    printf("file = %s\n", file_name);
+	    if (stat_func(path, &fstat) != 0)
+ 	    {
+//	    	printf("read_dir(): stat: error\n");
+      	    	//add_error(&error_lst, strerror(errno), path);
+//		ft_putendl_fd(str_error_access(strerror(errno), file_name), 2);
+   	    }
+    	    else
+     	    {
+	    	add_file(&file_lst, &fstat, *dir, FILE_NAME);
+       	    }
+       	}
+    }
+    closedir(dirstream);
+    print_file_lst(file_lst);
+    print_error_lst(error_lst);
+    recursive(file_lst);
+    //ft_lstdel(error_lst, lst_destructor);
+    //ft_lstdel(file_lst, lst_destructor);
+}
+#undef FILE_NAME
+
+void	process_dirs(char **argv)
+{
+    t_stat	fstat;
+    int		(*stat_func)(const char *restrict, struct stat *restrict);
+    int index;
+
+    index = 0;
+    if (OPT(L))
+        stat_func = &stat;
+    else
+        stat_func = &lstat;
+
+    while(*argv)
+    {
+	if (stat_func(*argv, &fstat) != 0);
+	else if ((S_ISDIR(fstat.st_mode)))
 	{
-		for (file = (*dir).content; file != NULL; file = (*file).next)
-		{
-			if ((*(t_file_infos*)(*file).content).printable == 1)
-				printf("\tFile v\tname: %s\n", (*(t_file_infos*)(*file).content).name);
-			else
-				printf("\tFile u\tname: %s\n", (*(t_file_infos*)(*file).content).name);
-		}
+	    if (index > 0)
+	    {
+	    	ft_putstr(*argv);
+	    	ft_putendl(":");
+	    }
+	    check_loop(fstat.st_ino, RESET);
+	    read_dir(argv);
+	    index++;
 	}
-}
-#undef DIR_CONTENT
-#undef FILE_CONTENT
-/*__TO BE DELETED*/
-
-void	file_lst_destructor(void *content, size_t size)
-{
-	ft_memdel(((void**)&(*(t_file_infos*)content).stat));
-	ft_strdel(&(*(t_file_infos*)content).path);
-	ft_strdel(&(*(t_file_infos*)content).name);
-	ft_strdel(&(*(t_file_infos*)content).str_mode);
-	ft_strdel(&(*(t_file_infos*)content).str_link);
-	ft_strdel(&(*(t_file_infos*)content).str_user);
-	ft_strdel(&(*(t_file_infos*)content).str_group);
-	ft_strdel(&(*(t_file_infos*)content).str_major);
-	ft_strdel(&(*(t_file_infos*)content).str_minor);
-	ft_strdel(&(*(t_file_infos*)content).str_size);
-	ft_strdel(&(*(t_file_infos*)content).str_date);
-	ft_memdel(&content);
+	argv++;
+    }
 }
 
-void	dir_lst_destructor(void *content, size_t size)
+void	process_args(char **argv)
 {
-	ft_lstdel((t_list**)&content, &file_lst_destructor);
-	ft_memdel(	&content	);
-}
-
-void	lst_destructor(t_list **dirlst)
-{
-	ft_lstdel(dirlst, &dir_lst_destructor);
-}
-
-char *join_slash(char *dir, char *file)
-{
-	char *ret;
-	char *tmp;
-
-	ret = NULL;
-	if (dir == NULL)
-		return(ft_strdup(file));
-	ret = ft_strnew(ft_strlen(dir) + ft_strlen(file) + 1);
-	tmp = ret;
-	while (*dir)
-		*tmp++ = *dir++;
-	*tmp++ = '/';
-	while (*file)
-		*tmp++ = *file++;
-	return(ret);
-
-}
-
-t_list	*lst_cur_dir_error(char *strerror, char *path)
-{
-	t_list		*file_lst;
-	t_list		*file_link;
-	t_file_infos	*file_info;
-
-	file_lst = NULL;
-	file_link = NULL;
-	file_info = NULL;
-
-	file_info = (t_file_infos*)ft_memalloc(sizeof(*file_info));
-	(*file_info).path = ft_strdup(path);
-//	(*file_info).name = ft_strdup(file);
-	(*file_info).error_str = str_error_access(strerror, path);
-	(*file_info).error_access = true;
-	file_link = ft_lstnew(NULL, sizeof(file_info));
-	(*file_link).content = file_info;
-	return(file_link);
-}
-
-void    dirlst_add_dir(t_list **dirlst, char *path)
-{
-	t_list      *new_dir_lnk = NULL;
-	t_list      *new_file_lst = NULL;
-	DIR         *dir_stream;
-
-	//Open dir stream
-	if ((dir_stream = opendir(path)) == NULL)
-	{
-		new_file_lst = lst_cur_dir_error(strerror(errno), path);
-	}
-	else
-	{
-		//List files
-		new_file_lst = lst_cur_dir(dir_stream, path);
-		//Close dir stream
-		closedir(dir_stream);
-	}
-
-	//Create dir link
-	new_dir_lnk = ft_lstnew(NULL, sizeof(new_file_lst));
-	(*new_dir_lnk).content = new_file_lst;
-
-	//Add dir link to dirlst
-	ft_lstadd_tail(dirlst, new_dir_lnk);
-
-	//Recursive
-	recursive(dirlst, new_file_lst, path);
-}
-
-void	dirlst_add_file(t_list **dirlst, char *path)
-{
-	static bool		done;
-	static t_list	*dir_link;
-	static t_list	*file_list;
-	t_list			*file_link;
-
-	file_link = NULL;
-
-	//Add file list to dir list
-	if (!done)
-	{
-		dir_link = ft_lstnew(NULL, sizeof(file_list));
-		ft_lstadd(dirlst, dir_link);
-		done = 1;
-	}
-
-	//Create new link & get file_infos
-	file_link = ft_lstnew(NULL, sizeof(t_file_infos*));
-	(*file_link).content = get_file_infos(NULL, path);
-
-	//add new link to file list
-	ft_lstsort(&file_list, file_link);
-
-	//Linking file list with dir link
-	(*dir_link).content = file_list;
-}
-
-#define PATH *(argv + index)
-#define FILE_MODE stat_buff.st_mode
-#define FILE_INODE stat_buff.st_ino
-size_t	get_dirlst(char **argv, t_list **dirlst)
-{
-	struct stat	stat_buff;
-	size_t		index;
-	int	(*stat_func)(const char *restrict, struct stat *restrict);
-
-	if (OPT(H))
-	{
-		stat_func = &stat;
-	}
-	else
-	{
-		stat_func = &lstat;
-	}
-	index = 1;
-	while (PATH)
-	{
-		if (stat_func(PATH, &stat_buff) == -1)
-		{
-			print_error_access(strerror(errno), PATH);
-		}
-		else if (S_ISDIR(FILE_MODE))
-		{
-			if (OPT(d))
-			{
-				dirlst_add_file(dirlst, PATH);
-			}
-			else
-			{
-				check_loop(FILE_INODE, RESET);
-				dirlst_add_dir(dirlst, PATH);
-			}
-		}
-		else
-		{
-			dirlst_add_file(dirlst, PATH);
-		}
-		//ft_lstdel(ino_lst);
-		index++;
-	}
-	return(index);
-}
-#undef PATH
-#undef FILE_MODE
-
-void	process_opt(t_list *file_list)
-{
-	process_printable(file_list);
-}
-
-void	process_opt_old(t_list *dirlst)
-{
-	t_list *file_list;
-
-	file_list = NULL;
-	while (dirlst != NULL)
-	{
-		file_list = (t_list*)(*dirlst).content;
-		process_printable(file_list);
-		dirlst = (*dirlst).next;
-	}
-}
-
-void	implicit_opts(void)
-{
-	t_sopt	opts;
-
-	opts = sopt(NULL);
-	OPT(f) ? opts.opt |= opt_a : 0;
-	OPT(n) ? opts.opt |= opt_l : 0;
-	OPT(d) ? opts.opt |= opt_a : 0;
-	OPT(L) ? opts.opt |= opt_H : 0;
-	sopt(&opts);
+    process_files(argv + 1);
+    process_dirs(argv + 1);
 }
 
 int		main(int argc, char **argv)
 {
-	t_sopt	tmp;
-	t_list	*dirlst;
-	size_t	index;
-	char 	**defaut;
+    t_sopt	tmp;
+    size_t	index;
+    char 	**defaut;
 
-	/*	GET OPT	*/
-	tmp = ft_getopt(argc, argv);		//get options
-	sopt(&tmp);							//put options in fake global
-	//    printf("Short opt:\n");
-	//    ft_print_short_options(sopt(NULL).opt);
-	//    printf("\nLong opt:\n");
-	//    ft_print_long_options(sopt(NULL).lopt);
-	//    ft_putendl("");
-	//    ft_putendl("");
-	/*__GET OPT	*/
+    //get options
+    tmp = ft_getopt(argc, argv);
+    sopt(&tmp);
 
-	/*implicit_opts*/
-	implicit_opts();
-	/*implicit_opts*/
+    //implicit_opts
+    implicit_opts();
 
+    //sort argv
+    argv_sort(argv);
 
-	/*GET_DIRLST*/
-	dirlst = NULL;
-	index = 0;
-	while (*(argv + ++index) != NULL);
-	if (index == 1)
-	{
-		defaut = (char**)ft_memalloc(sizeof(*defaut) * 3);
-		*(defaut + 1) = ft_strdup(".");
-		*(defaut + 2) = NULL;
-		index = get_dirlst(defaut, &dirlst);	//list all dirs, put orphans files in a fake dir.
-		ft_strdel(defaut + 1);
-		ft_memdel((void**)&defaut);
-	}
-	else
-	{
-		index = get_dirlst(argv, &dirlst);	//list all dirs, put orphans files in a fake dir.
-	}
-	/*__GET_DIRLST*/
+    //send args to process
+    index = 0;
+    while (*(argv + ++index) != NULL);
+    if (index == 1)
+    {
+	defaut = (char**)ft_memalloc(sizeof(*defaut) * 3);
+	*(defaut + 1) = ft_strdup(".");
+	*(defaut + 2) = NULL;
+	process_args(defaut);
+	ft_strdel(defaut + 1);
+	ft_memdel((void**)&defaut);
+    }
+    else
+    {
+	process_args(argv);
+    }
 
 
-	/*	PROCESS OPT*/
-	//    process_opt(dirlst);		//moved to print_dir()
-	/*__PROCESS OPT*/
-
-
-	/*PRINT*/
-	//printf("\nPrint dirlst:\n");
-	//print_dirlst(dirlst);
-	print_dir(dirlst, index);
-	/*__PRINT*/
-
-	/*MEM_FREE*/
-	lst_destructor(&dirlst);
-	/*__MEM_FREE*/
-
-	return (0);
+    return (0);
 }
 

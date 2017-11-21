@@ -1,56 +1,25 @@
 
 #include "ft_ls.h"
 
-char *str_error_access(char *err, char *path)
+void	print_error_malloc(int err_no)
 {
-	char    *error_mess;
-	char    *tmp;
-
-	error_mess = ft_strjoin("ft_ls: ", path);
-	tmp = error_mess;
-	error_mess = ft_strjoin(error_mess, ": ");
-	ft_strdel(&tmp);
-	tmp = error_mess;
-	error_mess = ft_strjoin(error_mess, err);
-	ft_strdel(&tmp);
-	error_mess = ft_strjoin(error_mess, "\n");
-	return(error_mess);
+	ft_putendl_fd(strerror(err_no), 2);
+	exit(EXIT_FAILURE);
 }
 
-void    print_error_access(char *err, char *path)
+char	*str_error_access(char *err, char *file)
 {
-	ft_putendl(str_error_access(err, path));
-}
-
-void	print_malloc_error(void)
-{
-	ft_putendl("malloc error!\n");
-	exit(-1);
-}
-
-#define STDERROR 2
-char *str_error_loop(char *directory, char *file)
-{
-	char *ret;
-	size_t index;
+	size_t	index;
+	char	*buff;
 
 	index = 0;
-	ret = ft_strnew(47 + ft_strlen(directory) + strlen(file));
-	ft_strcpy(ret, "ft_ls: ");
+	buff = ft_strnew(sizeof(*buff) * ft_strlen(err) + ft_strlen(file) + 666);
+	ft_strcpy(buff + index, "ft_ls: ");
 	index += 7;
-	ft_strcpy(ret + index, directory);
-	index += ft_strlen(directory);
-	ft_strcpy(ret + index, "/");
-	index += 1;
-	ft_strcpy(ret + index, file);
+	ft_strcpy(buff + index, file);
 	index += ft_strlen(file);
-	ft_strcpy(ret + index, ": not listing already-listed directory\n");
-
-	//ft_putstr_fd("ft_ls: ", STDERROR);
-	//ft_putstr_fd(directory, STDERROR);
-	//ft_putstr_fd("/", STDERROR);
-	//ft_putstr_fd(file, STDERROR);
-	//ft_putstr_fd(": not listing already-listed directory\n", STDERROR);
-
-	return(ret);
+	ft_strcpy(buff + index, ": ");
+	index += 2;
+	ft_strcpy(buff + index, err);
+	return(buff);
 }

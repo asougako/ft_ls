@@ -1,7 +1,7 @@
 #include "ft_ls.h"
 
-#define file_atime(INDEX) (*(*((t_file_infos*)content ## INDEX)).stat).st_atime
-#define file_name(INDEX) (*(*((t_file_infos*)content ## INDEX)).dir).d_name
+#define file_atime(INDEX) (*(*((t_xstat*)content ## INDEX)).stat).st_atime
+#define file_name(INDEX) (*(*((t_xstat*)content ## INDEX)).dir).d_name
 
 int64_t		atime_sort(void *content1, void *content2)
 {
