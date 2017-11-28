@@ -1,23 +1,36 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   print_long.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: asougako <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/11/28 14:17:53 by asougako          #+#    #+#             */
+/*   Updated: 2017/11/28 18:09:13 by asougako         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "ft_ls.h"
 
 #define CONTENT		(t_xstat*)(*link).content
+#define FILE_PATH	(*CONTENT).path
 #define FILE_NAME	(*CONTENT).name
 #define FILE_PRINT	(*CONTENT).printable
-#define HAS_XATTR	(*CONTENT).xa_size
-#define FILE_XATTR	(*CONTENT).xattr
 #define FILE_TYPE	(*(*CONTENT).stat).st_mode
 #define FILE_BLOCKS	(*(*CONTENT).stat).st_blocks
 
-#define FILE_INODE	(*CONTENT).str_inode
-#define FILE_MODE	(*CONTENT).str_mode
-#define FILE_LINK	(*CONTENT).str_link
-#define FILE_USER	(*CONTENT).str_user
-#define FILE_GROUP	(*CONTENT).str_group
-#define FILE_MAJOR	(*CONTENT).str_major
-#define FILE_MINOR	(*CONTENT).str_minor
-#define FILE_SIZE	(*CONTENT).str_size
-#define FILE_DATE	(*CONTENT).str_date
+#define STR_INODE	(*CONTENT).str_inode
+#define STR_MODE	(*CONTENT).str_mode
+#define STR_LINK	(*CONTENT).str_link
+#define STR_USER	(*CONTENT).str_user
+#define STR_GROUP	(*CONTENT).str_group
+#define STR_MAJOR	(*CONTENT).str_major
+#define STR_MINOR	(*CONTENT).str_minor
+#define STR_SIZE	(*CONTENT).str_size
+#define STR_DATE	(*CONTENT).str_date
+#define STR_NAME	(*CONTENT).str_name
+#define STR_SUFX	(*CONTENT).str_sufx
+#define STR_XATTR	(*CONTENT).str_xattr
 
 void	print_col(char *field, uint16_t width)
 {
@@ -90,36 +103,45 @@ void	print_file_lst_long(t_list *file_lst)
 	{
 		if (OPT(i))
 		{
-			print_col(FILE_INODE, INODE_WIDTH);
+			print_col(STR_INODE, INODE_WIDTH);
 		}
-		print_col(FILE_MODE, 11);
-		print_col(FILE_LINK, LINK_WIDTH);
+		print_col(STR_MODE, 11);
+		print_col(STR_LINK, LINK_WIDTH);
 		if (!(OPT(g)))
 		{
-			print_col(FILE_USER, USER_WIDTH);
+			print_col(STR_USER, USER_WIDTH);
 			ft_putchar(0x20);
 		}
 		if (!(OPT(o)))
 		{
-			print_col(FILE_GROUP, GROUP_WIDTH + 1);
+			print_col(STR_GROUP, GROUP_WIDTH + 1);
 		}
 		if (S_ISCHR(FILE_TYPE) || S_ISBLK(FILE_TYPE))
 		{
-			print_col(FILE_MAJOR, 4);
-			print_col(FILE_MINOR, 3);
+			print_col(STR_MAJOR, 4);
+			print_col(STR_MINOR, 3);
 		}
 		else
 		{
-			print_col(FILE_SIZE, SIZE_WIDTH);
+			print_col(STR_SIZE, SIZE_WIDTH);
 		}
-		print_col(FILE_DATE, DATE_WIDTH);
-		ft_putendl(FILE_NAME);
-		if (HAS_XATTR && OPT(e))
+		print_col(STR_DATE, DATE_WIDTH);
+
+		//name
+		//if (OPT(l) && S_ISLNK(FILE_TYPE))
+		//{
+	//		ft_putendl(get_referred_link(FILE_PATH, FILE_NAME));
+//		}
+//		else
+
+
+		ft_putstr(STR_NAME);
+		ft_putendl(STR_SUFX);
+
+		//xattr
+		if (OPT(E))
 		{
-			ft_putstr("\t");
-			ft_putstr(FILE_XATTR);
-			ft_putstr("\t\t");
-			ft_putendl(ft_itoa(HAS_XATTR));
+			ft_putstr(STR_XATTR);
 		}
 		link = (*link).next;
 	}
@@ -159,11 +181,11 @@ void	get_long_infos(t_list *head, t_col_max_width *colw)
 		if (S_ISCHR(FILE_TYPE) || S_ISBLK(FILE_TYPE))
 		{
 			(*CONTENT).str_major = get_major(link);
-					if ((tmp = ft_strlen((*CONTENT).str_major)) > MAJOR_WIDTH)
-					    MAJOR_WIDTH = tmp;
+			if ((tmp = ft_strlen((*CONTENT).str_major)) > MAJOR_WIDTH)
+				MAJOR_WIDTH = tmp;
 			(*CONTENT).str_minor = get_minor(link);
-					if ((tmp2 = ft_strlen((*CONTENT).str_minor)) > MINOR_WIDTH)
-					    MINOR_WIDTH = tmp2;
+			if ((tmp2 = ft_strlen((*CONTENT).str_minor)) > MINOR_WIDTH)
+				MINOR_WIDTH = tmp2;
 			if ((tmp + tmp2 ) > SIZE_WIDTH)
 				SIZE_WIDTH = 8;
 		}
@@ -211,7 +233,7 @@ char	*get_rights(t_list *link)
 	*(ret + 7) = FILE_TYPE & S_IROTH ? 'r' : '-';
 	*(ret + 8) = FILE_TYPE & S_IWOTH ? 'w' : '-';
 	*(ret + 9) = FILE_TYPE & S_IXOTH ? 'x' : '-';
-	*(ret + 10) = HAS_XATTR > 0 ? '@' : '\0';
+	*(ret + 10) = STR_XATTR != NULL ? '@' : '\0';
 	return(ret);
 }
 
@@ -280,22 +302,38 @@ char	*get_size(t_list *link)
 	return (ft_itoa((*(*CONTENT).stat).st_size));
 }
 
+#define FILE_ATIME (*(*CONTENT).stat).st_atime
+#define FILE_BTIME (*(*CONTENT).stat).st_birthtime
+#define FILE_CTIME (*(*CONTENT).stat).st_ctime
+#define FILE_MTIME (*(*CONTENT).stat).st_mtime
 char	*get_date(t_list *link)
 {
 	char	*ret;
 	char	*tmp;
 	char	*cut;
-	time_t	time;
+	time_t	file_time;
 
 	if (OPT(l) && OPT(u))
-		time = (*(*CONTENT).stat).st_atime;
+		file_time = (*(*CONTENT).stat).st_atime;
+	else if (OPT(l) && OPT(U))
+		file_time = (*(*CONTENT).stat).st_birthtime;
 	else if (OPT(l) && OPT(c))
-		time = (*(*CONTENT).stat).st_ctime;
+		file_time = (*(*CONTENT).stat).st_ctime;
 	else
-		time = (*(*CONTENT).stat).st_mtime;
+		file_time = (*(*CONTENT).stat).st_mtime;
 
-	tmp = ft_strdup(ctime(&time));
-	cut = tmp + 16;
+//	time_t now;
+//	now = time(NULL);
+//	pf(ctime(&now), s);
+//	pf(ctime(&file_time), s);
+//
+
+	tmp = ft_strdup(ctime(&file_time));
+	if (OPT(T))
+		cut = tmp + 24;
+	else
+		cut = tmp + 16;
+
 	*cut = '\0';
 	ret = ft_strdup(tmp + 4);
 	ft_memdel((void**)&tmp);

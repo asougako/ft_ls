@@ -19,7 +19,7 @@ void    lst_destructor(void *content, size_t size)
 	ft_memdel((void**)&((*(t_xstat*)content).stat));
 	ft_memdel((void**)&((*(t_xstat*)content).path));
 	ft_memdel((void**)&((*(t_xstat*)content).name));
-	ft_memdel((void**)&((*(t_xstat*)content).xattr));
+	ft_memdel((void**)&((*(t_xstat*)content).str_xattr));
 	ft_memdel((void**)&((*(t_xstat*)content).acl));
 	ft_memdel((void**)&((*(t_xstat*)content).error));
 	ft_memdel((void**)&((*(t_xstat*)content).str_inode));

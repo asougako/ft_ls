@@ -10,9 +10,9 @@ int             check_loop(ino_t new_inode, bool reset)
 
     if (reset == RESET)
     {
-        //add lst_del();
 		ft_lstdel(&ino_lst, inolst_destructor);
         ino_lst = NULL;
+		return(0);
     }
 
     ino_lnk = NULL;
@@ -39,6 +39,7 @@ void    recursive(t_list *file_lst)
 {
     char        *path;
     t_stat      fstat;
+    t_stat      fstat2;
     int         (*stat_func)(const char *restrict, struct stat *restrict);
 
     if (OPT(R))
@@ -55,28 +56,28 @@ void    recursive(t_list *file_lst)
                 path = path_join(FILE_DIR, FILE_NAME);
                 if (stat_func(path, &fstat) != 0)
                 {
-                    //ft_putendl_fd(str_error_access(strerror(errno), FILE_NAME), 2);
                     print_error_access(strerror(errno), FILE_NAME);
                 }
                 else if (S_ISDIR(FILE_MODE))
                 {
-                    if (check_loop(fstat.st_ino, NORESET))
-                    {
-                        print_error_loop(FILE_NAME);
-                    }
-                    else
-                    {
-                        ft_putendl("");
-                        ft_putstr(path);
-                        ft_putendl(":");
-                        read_dir(&path);
-                    }
-                }
+					lstat(path, &fstat2);
+					if (check_loop(fstat.st_ino, NORESET))
+					{
+						print_error_loop(FILE_NAME);
+					}
+					else
+					{
+						ft_putendl("");
+						ft_putstr(path);
+						ft_putendl(":");
+						read_dir(&path);
+					}
+				}
 				ft_strdel(&path);
-            }
-            file_lst = (*file_lst).next;
-        }
-    }
+			}
+			file_lst = (*file_lst).next;
+		}
+	}
 }
 #undef FILE_NAME
 #undef FILE_NAME_ISNT

@@ -45,8 +45,6 @@ typedef struct		s_xstat
 	t_stat		*stat;
 	char		*path;
 	char		*name;		//if NULL? not printable
-	char		*xattr;		//if NULL? no xattr
-	int			xa_size;
 	acl_t		*acl;
 	char		*error;		//if NULL? no error
 
@@ -60,6 +58,9 @@ typedef struct		s_xstat
 	char		*str_minor;
 	char		*str_size;
 	char		*str_date;
+	char		*str_name;
+	char		*str_sufx;
+	char		*str_xattr;
 }				t_xstat;
 
 typedef struct		s_tab_format
@@ -90,15 +91,13 @@ int32_t	ft_lstsort(t_list **head, t_list *link);
 int64_t	name_sort(void *content1, void *content2);
 int64_t	size_sort(void *content1, void *content2);
 int64_t	atime_sort(void *content1, void *content2);
-#ifndef linux
 int64_t	btime_sort(void *content1, void *content2);
-int64_t	rev_btime_sort(void *content1, void *content2);
-#endif
 int64_t	ctime_sort(void *content1, void *content2);
 int64_t	mtime_sort(void *content1, void *content2);
 int64_t	rev_name_sort(void *content1, void *content2);
 int64_t	rev_size_sort(void *content1, void *content2);
 int64_t	rev_atime_sort(void *content1, void *content2);
+int64_t	rev_btime_sort(void *content1, void *content2);
 int64_t	rev_ctime_sort(void *content1, void *content2);
 int64_t	rev_mtime_sort(void *content1, void *content2);
 int64_t	no_sort(void *content1, void *content2);
@@ -138,6 +137,7 @@ char    *get_minor(t_list *link);
 char    *get_size(t_list *link);
 char    *get_date(t_list *link);
 char    *acl_get(t_list *link);
+char *get_referred_link(t_list *file_link);
 
 //error
 void	print_error_malloc(int err_no);
