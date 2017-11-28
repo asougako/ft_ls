@@ -17,10 +17,10 @@
 #include <grp.h>
 #include <stdio.h>  //perror
 #include <errno.h>
+#include <sys/acl.h>
 #include "parsing/ft_getopt.h"
 #include "libft/libft.h"
 #include "ft_ls.h"
-
 #include <time.h>
 
 #define pf(VAR, TYPE) printf(#VAR" = %"#TYPE"\n", VAR)
@@ -42,17 +42,13 @@ typedef struct		stat t_stat;
 typedef struct		s_xstat
 {
 	//Raw
-//	bool		printable;
 	t_stat		*stat;
 	char		*path;
 	char		*name;		//if NULL? not printable
 	char		*xattr;		//if NULL? no xattr
-	int		xa_size;
-	char		*error;	//if NULL? no error
-//	unsigned char	type;
-//	size_t		name_len;
-//	bool		has_xattr;
-//	bool		has_error;
+	int			xa_size;
+	acl_t		*acl;
+	char		*error;		//if NULL? no error
 
 	//Stringified
 	char		*str_inode;
@@ -64,7 +60,7 @@ typedef struct		s_xstat
 	char		*str_minor;
 	char		*str_size;
 	char		*str_date;
-}			t_xstat;
+}				t_xstat;
 
 typedef struct		s_tab_format
 {
@@ -72,9 +68,9 @@ typedef struct		s_tab_format
 	uint32_t	columns;
 	uint32_t	lines;
 	uint32_t	*col_width;
-}					t_tab_format;
+}				t_tab_format;
 
-typedef struct			s_col_max_width
+typedef struct	s_col_max_width
 {
 	uint16_t	inode_w;
 	uint16_t	mode_w;
@@ -94,13 +90,15 @@ int32_t	ft_lstsort(t_list **head, t_list *link);
 int64_t	name_sort(void *content1, void *content2);
 int64_t	size_sort(void *content1, void *content2);
 int64_t	atime_sort(void *content1, void *content2);
+#ifndef linux
 int64_t	btime_sort(void *content1, void *content2);
+int64_t	rev_btime_sort(void *content1, void *content2);
+#endif
 int64_t	ctime_sort(void *content1, void *content2);
 int64_t	mtime_sort(void *content1, void *content2);
 int64_t	rev_name_sort(void *content1, void *content2);
 int64_t	rev_size_sort(void *content1, void *content2);
 int64_t	rev_atime_sort(void *content1, void *content2);
-int64_t	rev_btime_sort(void *content1, void *content2);
 int64_t	rev_ctime_sort(void *content1, void *content2);
 int64_t	rev_mtime_sort(void *content1, void *content2);
 int64_t	no_sort(void *content1, void *content2);
@@ -110,22 +108,46 @@ t_sopt  sopt(t_sopt *input);
 void    implicit_opts(void);
 
 //process
+char *path_to_file(char *path);
+void    process_args(char **argv, int argc);
+void    process_dirs(char **argv, int argc);
 void	process_files(char **argv);
-void	add_error(t_list **error_lst, char *err, char *file);
+void   add_error(t_list **error_lst, char *err, char *file);
 void	add_file(t_list **file_lst, t_stat *stat, char *dir, char *file);
 void	read_dir(char **dir);
 char	*path_join(char *dir, char *file);
 int	check_loop(ino_t new_inode, bool reset);
+void    recursive(t_list *file_lst);
 
 //print
 void	print_error_lst(t_list *error_lst);
+void	print_one_per_line(t_list *file_lst);
 void	print_file_lst(t_list *file_lst);
 void    print_file_lst_short(t_list *file_lst);
 void    print_file_lst_short_across(t_list *file_lst);
+void    print_file_lst_short_across_comma(t_list *file_lst);
 void    print_file_lst_long(t_list *file_lst);
+void    get_long_infos(t_list *head, t_col_max_width *colw);
+char    *get_rights(t_list *link);
+char    *get_inode(t_list *link);
+char    *get_links(t_list *link);
+char    *get_user(t_list *link);
+char    *get_group(t_list *link);
+char    *get_major(t_list *link);
+char    *get_minor(t_list *link);
+char    *get_size(t_list *link);
+char    *get_date(t_list *link);
+char    *acl_get(t_list *link);
 
 //error
 void	print_error_malloc(int err_no);
+void    print_error_loop(char *file);
 char	*str_error_access(char *err, char *file);
+void    print_error_access(char *err, char *file);
+
+//destructor
+void    inolst_destructor(void *content, size_t size);
+void    errlst_destructor(void *content, size_t size);
+void    lst_destructor(void *content, size_t size);
 
 #endif

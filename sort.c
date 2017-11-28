@@ -14,7 +14,9 @@ static int64_t (*choose_sort_func(void))(void*, void*)
 	else
 	{
 	    (OPT(u)) ? sort_func_ptr = &rev_atime_sort: 0; //  atime
+#ifndef linux
 	    (OPT(U)) ? sort_func_ptr = &rev_btime_sort: 0; //  atime
+#endif
 	    (OPT(c)) ? sort_func_ptr = &rev_ctime_sort: 0; //  ctime
 	}
     }
@@ -27,7 +29,9 @@ static int64_t (*choose_sort_func(void))(void*, void*)
 	else
 	{
 	    (OPT(u)) ? sort_func_ptr = &atime_sort: 0; //  atime
+#ifndef linux
 	    (OPT(U)) ? sort_func_ptr = &btime_sort: 0; //  atime
+#endif
 	    (OPT(c)) ? sort_func_ptr = &ctime_sort: 0; //  ctime
 	}
     }

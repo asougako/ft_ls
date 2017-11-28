@@ -7,6 +7,13 @@ void	print_error_malloc(int err_no)
 	exit(EXIT_FAILURE);
 }
 
+void	print_error_loop(char *file)
+{
+	ft_putstr_fd("ft_ls: ", 2);
+	ft_putstr_fd(file, 2);
+	ft_putendl_fd(": directory causes a cycle", 2);
+}
+
 char	*str_error_access(char *err, char *file)
 {
 	size_t	index;
@@ -22,4 +29,14 @@ char	*str_error_access(char *err, char *file)
 	index += 2;
 	ft_strcpy(buff + index, err);
 	return(buff);
+}
+
+void	print_error_access(char *err, char *file)
+{
+	char *buff;
+
+	buff = NULL;
+	buff = str_error_access(err, file);
+	ft_putendl_fd(buff, 2);
+	ft_strdel(&buff);
 }

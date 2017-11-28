@@ -1,0 +1,5 @@
+argv_sort.c, auteur, checker.sh, error.c, ft_ls, ft_ls.c, ft_ls.dSYM, ft_ls.h,
+lib, log, Makefile, options.c, path.c, print.c, print_long.c, process.c,
+process_dir.c, process_file.c, README.md, recursive.c, sort_atime.c,
+sort_btime.c, sort.c, sort_ctime.c, sort_mtime.c, sort_name.c, sort_no.c,
+sort_size.c, test_print

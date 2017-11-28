@@ -2,7 +2,7 @@
 
 void	*ft_memdup(const void *src, int size)
 {
-		char *dst;
+		unsigned char *dst;
 
 		dst = NULL;
 		if ((dst = (unsigned char*)malloc(sizeof(*dst) * size)) == NULL)
