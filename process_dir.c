@@ -54,7 +54,6 @@ void    read_dir(char **dir)
 	}
 	if ((dirstream = opendir(*dir)) == NULL)
 	{
-		//printf("read_dir(): opendir: error\n");
 		ft_putendl_fd(str_error_access(strerror(errno), path_to_file(*dir)), 2);
 		return;
 	}
@@ -66,8 +65,6 @@ void    read_dir(char **dir)
 			if (stat_func(path, &fstat) != 0)
 			{
 				// !!!!!!!!!!!! check error message order with bad links
-				//printf("read_dir(): stat: error\n");
-				//ft_putendl_fd(str_error_access(strerror(errno), file_name), 2);
 				add_error(&error_lst, strerror(errno), path);
 			}
 			else

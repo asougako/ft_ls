@@ -28,6 +28,7 @@
 #define OPT(OPTION)  sopt(NULL).opt & opt_##OPTION
 #define NORESET 0
 #define RESET 1
+#define DELLAST 2
 #define LOOP_ERROR 1
 //TYPEDEFS//
 typedef enum e_bool
@@ -61,6 +62,7 @@ typedef struct		s_xstat
 	char		*str_name;
 	char		*str_sufx;
 	char		*str_xattr;
+	char		*str_acl;
 }				t_xstat;
 
 typedef struct		s_tab_format

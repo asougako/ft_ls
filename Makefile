@@ -15,7 +15,8 @@ SRC =	ft_ls.c			options.c		argv_sort.c		error.c\
 		process_file.c	print.c			sort.c			sort_ctime.c\
 		sort_name.c		sort_size.c		sort_atime.c	sort_mtime.c\
 		sort_no.c		sort_btime.c	process.c		process_dir.c\
-		path.c			recursive.c		print_long.c	destructor.c
+		path.c			recursive.c		print_long.c	destructor.c\
+		help.c
 
 all: $(NAME)
 

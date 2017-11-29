@@ -46,8 +46,8 @@ int	get_name_max_size(t_list *file_lst)
 		file_lst = (*file_lst).next;
 	}
 	maxsize++;
-	while ((maxsize % 8) != 0)
-		maxsize++;
+//	while ((maxsize % 8) != 0)
+//		maxsize++;
 	return(maxsize);
 }
 
@@ -88,13 +88,12 @@ void	padding(char **buff, char *src, int colw)
 
 	tmp = *buff;
 	while (*tmp != '\0')
-	{
 		tmp++;
-	}
+
 	ft_strcpy(tmp, src);
 
 	size = ft_strlen(src);
-	ft_memset(tmp + size, '\t', ((colw - size - 1) / CHAR_PER_TAB) + 1);
+	ft_memset(tmp + size, 0x20, colw - size);
 
 }
 

@@ -6,7 +6,7 @@
 /*   By: asougako <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 14:17:53 by asougako          #+#    #+#             */
-/*   Updated: 2017/11/28 18:09:13 by asougako         ###   ########.fr       */
+/*   Updated: 2017/11/29 17:54:22 by asougako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@
 #define STR_NAME	(*CONTENT).str_name
 #define STR_SUFX	(*CONTENT).str_sufx
 #define STR_XATTR	(*CONTENT).str_xattr
+#define STR_ACL		(*CONTENT).str_acl
 
 void	print_col(char *field, uint16_t width)
 {
@@ -127,22 +128,17 @@ void	print_file_lst_long(t_list *file_lst)
 		}
 		print_col(STR_DATE, DATE_WIDTH);
 
-		//name
-		//if (OPT(l) && S_ISLNK(FILE_TYPE))
-		//{
-	//		ft_putendl(get_referred_link(FILE_PATH, FILE_NAME));
-//		}
-//		else
-
-
 		ft_putstr(STR_NAME);
 		ft_putendl(STR_SUFX);
 
 		//xattr
 		if (OPT(E))
-		{
 			ft_putstr(STR_XATTR);
-		}
+
+		//xattr
+		if (OPT(e))
+			ft_putstr(STR_ACL);
+
 		link = (*link).next;
 	}
 	ft_memdel((void**)&colw);
@@ -224,16 +220,45 @@ char	*get_rights(t_list *link)
 	S_ISCHR(FILE_TYPE)  ? *(ret + 0) = 'c' : 0;
 	S_ISBLK(FILE_TYPE)  ? *(ret + 0) = 'b' : 0;
 	S_ISFIFO(FILE_TYPE) ? *(ret + 0) = 'p' : 0;
+
 	*(ret + 1) = FILE_TYPE & S_IRUSR ? 'r' : '-';
 	*(ret + 2) = FILE_TYPE & S_IWUSR ? 'w' : '-';
-	*(ret + 3) = FILE_TYPE & S_IXUSR ? 'x' : '-';
+	if ((FILE_TYPE & S_IXUSR) && (FILE_TYPE & S_ISUID))
+		*(ret + 3) = 's';
+	else if (FILE_TYPE & S_ISUID)
+		*(ret + 3) = 'S';
+	else if (FILE_TYPE & S_IXUSR)
+		*(ret + 3) = 'x';
+	else
+		*(ret + 3) = '-';
+
 	*(ret + 4) = FILE_TYPE & S_IRGRP ? 'r' : '-';
 	*(ret + 5) = FILE_TYPE & S_IWGRP ? 'w' : '-';
-	*(ret + 6) = FILE_TYPE & S_IXGRP ? 'x' : '-';
+	if ((FILE_TYPE & S_IXGRP) && (FILE_TYPE & S_ISGID))
+		*(ret + 6) = 's';
+	else if (FILE_TYPE & S_ISGID)
+		*(ret + 6) = 'S';
+	else if (FILE_TYPE & S_IXGRP)
+		*(ret + 6) = 'x';
+	else
+		*(ret + 6) = '-';
+
 	*(ret + 7) = FILE_TYPE & S_IROTH ? 'r' : '-';
 	*(ret + 8) = FILE_TYPE & S_IWOTH ? 'w' : '-';
-	*(ret + 9) = FILE_TYPE & S_IXOTH ? 'x' : '-';
-	*(ret + 10) = STR_XATTR != NULL ? '@' : '\0';
+
+	if ((FILE_TYPE & S_IXOTH) && (FILE_TYPE & S_ISVTX))
+		*(ret + 9) = 't';
+	else if(FILE_TYPE & S_ISVTX)
+		*(ret + 9) = 'T';
+	else if (FILE_TYPE & S_IXOTH)
+		*(ret + 9) = 'x';
+	else
+		*(ret + 9) = '-';
+
+	if (STR_ACL)
+		*(ret + 10) = '+';
+	else if(STR_XATTR)
+		*(ret + 10) = '@';
 	return(ret);
 }
 

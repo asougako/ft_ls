@@ -20,7 +20,6 @@ void    lst_destructor(void *content, size_t size)
 	ft_memdel((void**)&((*(t_xstat*)content).path));
 	ft_memdel((void**)&((*(t_xstat*)content).name));
 	ft_memdel((void**)&((*(t_xstat*)content).str_xattr));
-	ft_memdel((void**)&((*(t_xstat*)content).acl));
 	ft_memdel((void**)&((*(t_xstat*)content).error));
 	ft_memdel((void**)&((*(t_xstat*)content).str_inode));
 	ft_memdel((void**)&((*(t_xstat*)content).str_mode));
@@ -31,5 +30,9 @@ void    lst_destructor(void *content, size_t size)
 	ft_memdel((void**)&((*(t_xstat*)content).str_minor));
 	ft_memdel((void**)&((*(t_xstat*)content).str_size));
 	ft_memdel((void**)&((*(t_xstat*)content).str_date));
+	ft_memdel((void**)&((*(t_xstat*)content).str_name));
+	ft_memdel((void**)&((*(t_xstat*)content).str_sufx));
+	ft_memdel((void**)&((*(t_xstat*)content).str_xattr));
+	ft_memdel((void**)&((*(t_xstat*)content).str_acl));
 	ft_memdel((void**)&content);
 }

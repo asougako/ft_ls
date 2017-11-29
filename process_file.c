@@ -80,32 +80,34 @@ static void	get_xattr(t_list *file_link)
 
 static void	get_acl(t_list	*file_link, char * path)
 {
-	acl_t	acl;
-	acl_entry_t	*entry;
-	int		errnum;
+	acl_t		acl;
+//	acl_entry_t	*entry;
+//	int			errnum;
+	ssize_t		*len_p;
 
-	file_link++;
 
 	//get acl
 	if ((acl = acl_get_file(path, ACL_TYPE_EXTENDED)) == NULL)
 	{
-		//	errnum = errno;
-		// 	printf("%s: %s(%d)\n", path, strerror(errnum), errnum);
+//			errnum = errno;
+//		 	printf("%s: %s(%d)\n", path, strerror(errnum), errnum);
 		return;
 	}
 
-	entry = ft_memalloc(sizeof(*entry));
-	if ((acl_get_entry(acl, ACL_FIRST_ENTRY, entry)) == -1)
-	{
-		errnum = errno;
-		//printf("%s: %s(%d)\n", path, strerror(errnum), errnum);
-		return;
-	}
-	ft_putendl("");
-	//ft_print_memory(entry, sizeof(*entry));
-	//
-	//
-	ft_memdel((void**)&entry);
+//	entry = ft_memalloc(sizeof(*entry));
+//	if ((acl_get_entry(acl, ACL_FIRST_ENTRY, entry)) == -1)
+//	{
+//		errnum = errno;
+//		printf("%s: %s(%d)\n", path, strerror(errnum), errnum);
+//		return;
+//	}
+
+//	printf("ACL:%s\n", (*(t_xstat*)(*file_link).content).name);
+	len_p = NULL;
+	len_p = (ssize_t*)ft_memalloc(sizeof(*len_p));
+	(*(t_xstat*)(*file_link).content).str_acl = acl_to_text(acl, len_p);
+
+	//ft_memdel((void**)&entry);
 }
 
 
@@ -190,6 +192,10 @@ void	get_suffixe(t_list *file_link)
 #define C_BLUE_CYAN		"\e[46;34m"
 #define C_PURPLE		"\e[0;35m"
 #define C_RED			"\e[0;31m"
+#define C_BACK_RED		"\e[41;30m"
+#define C_BACK_CYAN		"\e[46;30m"
+#define C_BLACK_GREEN	"\e[42;30m"
+#define C_BLACK_YELLOW	"\e[43;30m"
 
 char	*color_name(t_list	*file_link, char *name)
 {
@@ -201,7 +207,11 @@ char	*color_name(t_list	*file_link, char *name)
 	if (!(OPT(G)))
 		return(ft_strdup(name));
 
-	if (S_ISDIR(FILE_TYPE))	//d
+	if (S_ISDIR(FILE_TYPE) && (FILE_TYPE & S_IWOTH) && (FILE_TYPE & S_ISVTX))
+		color = ft_strdup(C_BLACK_GREEN);
+	else if (S_ISDIR(FILE_TYPE) && (FILE_TYPE & S_IWOTH))	//d
+		color = ft_strdup(C_BLACK_YELLOW);
+	else if (S_ISDIR(FILE_TYPE))	//d
 		color = ft_strdup(C_CYAN);
 	else if (S_ISBLK(FILE_TYPE))	//b
 		color = ft_strdup(C_BLUE_CYAN);
@@ -209,12 +219,10 @@ char	*color_name(t_list	*file_link, char *name)
 		color = ft_strdup(C_BLUE_YELLOW);
 	else if (S_ISLNK(FILE_TYPE))	//l
 		color = ft_strdup(C_PURPLE);
-//	if (S_ISSOCK(FILE_TYPE))
-//		color = ft_strdup(C_);
-//	if (S_ISWHT(FILE_TYPE))
-//		color = ft_strdup(C_);
-//	if (S_ISFIFO(FILE_TYPE))
-//		color = ft_strdup(C_);
+	else if ((FILE_TYPE & S_ISUID) && (FILE_TYPE & S_IXUSR))
+		color = ft_strdup(C_BACK_RED);
+	else if ((FILE_TYPE & S_ISGID) && (FILE_TYPE & S_IXGRP))
+		color = ft_strdup(C_BACK_CYAN);
 	else if (FILE_TYPE & 00111)
 		color = ft_strdup(C_RED);
 	else

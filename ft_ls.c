@@ -1,24 +1,20 @@
 /*	TO DO
 	- hide hour if date is more than 6 months ago or in the future
-	- sort when input multipe directories
-	- recursive loop protect (inode check?)
-	- add -@ option (currently -e)
-	- sort funcs buf=gged without -l
-	- seg fault ./ft_ls -lL ~/Library/Application\ Support/Google/Chrome
-	- check -RL inode loop
 	- colplete colors (stycky bits, GID, UID...)
+	- check bad args + print synopsis
+	- add argv + 0 in error print
  */
 
 
 /*base opts:
 x	-l	List in long format.  (See below.)  If the output is to a ter-
-		minal, a total sum for all the file sizes is output on a line before the long listing.
+			minal, a total sum for all the file sizes is output on a line before the long listing.
 x	-R	Recursively list subdirectories encountered.
 x	-a	Include directory entries whose names begin with a dot (.).
 x	-r	Reverse the order of the sort to get reverse lexicographical order or the oldest entries first
-		(or largest files last, if combined with sort by size
+			(or largest files last, if combined with sort by size
 x	-t	Sort by time modified (most recently modified first) before sorting the operands by lexico-
-		graphical order.
+			graphical order.
  */
 
 /*bonus opts:
@@ -26,7 +22,8 @@ x	-1	Force output to be one entry per line.  This is the default when output is 
 x	-A	List all entries except for . and ...  Always set for the super-user.
 x	-c	Use time when file status was last changed for sorting (-t) or long printing (-l).
 x	-d	Directories are listed as plain files (not searched recursively).
-t	-e	Print the Access Control List (ACL) associated with the file, if present, in long (-l) output.
+	-e	Print the Access Control List (ACL) associated with the file, if present, in long (-l) output.
+x	-E	Display extended attribute keys and sizes in long (-l) output.
 x	-F	Display a slash (`/') immediately after each pathname that is a directory, an asterisk (`*')
 			after each that is executable, an at sign (`@') after each symbolic link, an equals sign (`=')
 			after each socket, a percent sign (`%') after each whiteout, and a vertical bar (`|') after
@@ -86,6 +83,13 @@ x	-x	The same as -C, except that the multi-column output is produced with entrie
 
 #include "ft_ls.h"
 
+void	check_illegal_arg(void)
+{
+	//if (bad arg)
+	//print synopsis
+	//exit (-1);
+}
+
 int		main(int argc, char **argv)
 {
 	t_sopt	tmp;
@@ -98,13 +102,20 @@ int		main(int argc, char **argv)
 	//implicit_opts
 	implicit_opts();
 
-printf("Short opt:\n");
-ft_print_short_options(sopt(NULL).opt);
-printf("\nLong opt:\n");
-ft_print_long_options(sopt(NULL).lopt);
-ft_putendl("");
-ft_putendl("");
+//	printf("Short opt:\n");
+//	ft_print_short_options(sopt(NULL).opt);
+//	printf("\nLong opt:\n");
+//	ft_print_long_options(sopt(NULL).lopt);
+//	ft_putendl("");
+//	ft_putendl("");
 
+//	check_illegal_arg();
+
+//	if (OPTL("help"))
+//	{
+//		put_help();
+//		return(0);
+//	}
 
 	//sort argv
 	argv_sort(argv);
