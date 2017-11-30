@@ -3,6 +3,6 @@
 
 void    process_args(char **argv, int argc)
 {
-    process_files(argv + 1);
-    process_dirs(argv + 1, argc);
+    process_files(argv + 0);
+    process_dirs(argv + 0, argc);
 }

@@ -6,7 +6,7 @@
 /*   By: asougako <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 14:17:53 by asougako          #+#    #+#             */
-/*   Updated: 2017/11/29 17:54:22 by asougako         ###   ########.fr       */
+/*   Updated: 2017/11/30 19:42:52 by asougako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,18 +102,18 @@ void	print_file_lst_long(t_list *file_lst)
 	}
 	while(link != NULL)
 	{
-		if (OPT(i))
+		if (opt_i)
 		{
 			print_col(STR_INODE, INODE_WIDTH);
 		}
 		print_col(STR_MODE, 11);
 		print_col(STR_LINK, LINK_WIDTH);
-		if (!(OPT(g)))
+		if (!(opt_g))
 		{
 			print_col(STR_USER, USER_WIDTH);
 			ft_putchar(0x20);
 		}
-		if (!(OPT(o)))
+		if (!(opt_o))
 		{
 			print_col(STR_GROUP, GROUP_WIDTH + 1);
 		}
@@ -132,11 +132,11 @@ void	print_file_lst_long(t_list *file_lst)
 		ft_putendl(STR_SUFX);
 
 		//xattr
-		if (OPT(E))
+		if (opt_at)
 			ft_putstr(STR_XATTR);
 
 		//xattr
-		if (OPT(e))
+		if (opt_e)
 			ft_putstr(STR_ACL);
 
 		link = (*link).next;
@@ -153,7 +153,7 @@ void	get_long_infos(t_list *head, t_col_max_width *colw)
 	link = head;
 	while(link != NULL)
 	{
-		if (OPT(i))
+		if (opt_i)
 		{
 			(*CONTENT).str_inode = get_inode(link);
 			if ((tmp = ft_strlen((*CONTENT).str_inode)) > INODE_WIDTH)
@@ -279,7 +279,7 @@ char	*get_user(t_list *link)
 
 	ret = NULL;
 	passwd = NULL;
-	if (OPT(n))
+	if (opt_n)
 		ret = ft_strdup(ft_itoa((*(*CONTENT).stat).st_uid));
 	else
 	{
@@ -294,7 +294,7 @@ char	*get_group(t_list *link)
 	char	*ret;
 	struct group *group = NULL;
 
-	if (OPT(n))
+	if (opt_n)
 	{
 		ret = ft_strdup(ft_itoa((*(*CONTENT).stat).st_gid));
 	}
@@ -338,11 +338,11 @@ char	*get_date(t_list *link)
 	char	*cut;
 	time_t	file_time;
 
-	if (OPT(l) && OPT(u))
+	if (opt_l && opt_u)
 		file_time = (*(*CONTENT).stat).st_atime;
-	else if (OPT(l) && OPT(U))
+	else if (opt_l && opt_U)
 		file_time = (*(*CONTENT).stat).st_birthtime;
-	else if (OPT(l) && OPT(c))
+	else if (opt_l && opt_c)
 		file_time = (*(*CONTENT).stat).st_ctime;
 	else
 		file_time = (*(*CONTENT).stat).st_mtime;
@@ -354,7 +354,7 @@ char	*get_date(t_list *link)
 //
 
 	tmp = ft_strdup(ctime(&file_time));
-	if (OPT(T))
+	if (opt_T)
 		cut = tmp + 24;
 	else
 		cut = tmp + 16;

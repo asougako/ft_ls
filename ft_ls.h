@@ -24,19 +24,49 @@
 #include <time.h>
 
 #define pf(VAR, TYPE) printf(#VAR" = %"#TYPE"\n", VAR)
-#define flag(CHAR) sopt(NULL).opt & opt_##CHAR
-#define OPT(OPTION)  sopt(NULL).opt & opt_##OPTION
+//#define flag(CHAR) sopt(NULL).opt & opt_##CHAR
+//#define OPT(OPTION)  sopt(NULL).opt & opt_##OPTION
 #define NORESET 0
 #define RESET 1
 #define DELLAST 2
 #define LOOP_ERROR 1
-//TYPEDEFS//
-typedef enum e_bool
-{
-		false,
-		true = !false
-}						bool;
 
+/*GLOBALS*/
+extern t_bool opt_at;
+extern t_bool opt_1;
+extern t_bool opt_A;
+extern t_bool opt_a;
+extern t_bool opt_c;
+extern t_bool opt_d;
+extern t_bool opt_e;
+extern t_bool opt_F;
+extern t_bool opt_f;
+extern t_bool opt_G;
+extern t_bool opt_g;
+extern t_bool opt_H;
+extern t_bool opt_h;
+extern t_bool opt_i;
+extern t_bool opt_k;
+extern t_bool opt_l;
+extern t_bool opt_L;
+extern t_bool opt_m;
+extern t_bool opt_n;
+extern t_bool opt_o;
+extern t_bool opt_P;
+extern t_bool opt_p;
+extern t_bool opt_R;
+extern t_bool opt_r;
+extern t_bool opt_S;
+extern t_bool opt_T;
+extern t_bool opt_t;
+extern t_bool opt_U;
+extern t_bool opt_u;
+extern t_bool opt_x;
+
+
+
+
+//TYPEDEFS//
 typedef struct		dirent t_dirent;
 typedef struct		stat t_stat;
 
@@ -105,7 +135,6 @@ int64_t	rev_mtime_sort(void *content1, void *content2);
 int64_t	no_sort(void *content1, void *content2);
 
 //opt
-t_sopt  sopt(t_sopt *input);
 void    implicit_opts(void);
 
 //process
@@ -117,7 +146,7 @@ void   add_error(t_list **error_lst, char *err, char *file);
 void	add_file(t_list **file_lst, t_stat *stat, char *dir, char *file);
 void	read_dir(char **dir);
 char	*path_join(char *dir, char *file);
-int	check_loop(ino_t new_inode, bool reset);
+int	check_loop(ino_t new_inode, t_bool reset);
 void    recursive(t_list *file_lst);
 
 //print
@@ -142,6 +171,7 @@ char    *acl_get(t_list *link);
 char *get_referred_link(t_list *file_link);
 
 //error
+char    *av0(char **argv);
 void	print_error_malloc(int err_no);
 void    print_error_loop(char *file);
 char	*str_error_access(char *err, char *file);

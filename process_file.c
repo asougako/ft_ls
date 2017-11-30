@@ -163,12 +163,12 @@ void	get_suffixe(t_list *file_link)
 	index = 0;
 	type = NULL;
 	reflnk = NULL;
-	if (OPT(F) || (OPT(p) && S_ISDIR(FILE_TYPE)))
+	if (opt_F || (opt_p && S_ISDIR(FILE_TYPE)))
 	{
 		type = get_type(FILE_TYPE);
 		index++;
 	}
-	if (OPT(l) && S_ISLNK((*FILE_STAT).st_mode))
+	if (opt_l && S_ISLNK((*FILE_STAT).st_mode))
 	{
 		reflnk = get_referred_link(file_link);
 		index += ft_strlen(reflnk);
@@ -204,7 +204,7 @@ char	*color_name(t_list	*file_link, char *name)
 	int		name_len;
 	int		color_len;
 
-	if (!(OPT(G)))
+	if (!(opt_G))
 		return(ft_strdup(name));
 
 	if (S_ISDIR(FILE_TYPE) && (FILE_TYPE & S_IWOTH) && (FILE_TYPE & S_ISVTX))
@@ -263,7 +263,7 @@ void    add_file(t_list **file_lst, t_stat *fstat, char *dir, char *file)
 	//STR_NAME = ft_strdup(file);
 	STR_NAME = color_name(file_link, file);
 
-	if (OPT(l))
+	if (opt_l)
 	{
 		get_suffixe(file_link);
 		if (dir == NULL)
@@ -297,7 +297,7 @@ void    process_files(char **argv)
 	file_lst = NULL;
 	error_lst = NULL;
 
-	if (OPT(L) || OPT(H))
+	if (opt_L || opt_H)
 		stat_func = &stat;
 	else
 		stat_func = &lstat;
@@ -308,7 +308,7 @@ void    process_files(char **argv)
 		{
 			add_error(&error_lst, strerror(errno), *argv);
 		}
-		else if (!(S_ISDIR(fstat.st_mode)) || (OPT(d)))
+		else if (!(S_ISDIR(fstat.st_mode)) || (opt_d))
 		{
 			add_file(&file_lst, &fstat, NULL, *argv);
 		}

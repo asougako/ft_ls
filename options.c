@@ -1,45 +1,35 @@
 
 #include "ft_ls.h"
 
-t_sopt  sopt(t_sopt *input)
-{
-		static t_sopt   opt;
-		if (input != NULL)
-		{
-				opt = *input;
-		}
-		return (opt);
-}
-
 void    implicit_opts(void)
 {
-    t_sopt  opts;
+//	t_sopt  opts;
 
-	opts = sopt(NULL);
+//	opts = sopt(NULL);
 
 	//	-f turns on the -a option
-	if (OPT(f))
-		opts.opt |= opt_a;
+//	if (OPT(f))
+//		opts.opt |= opt_a;
 
 	//	-n turns on the -l option.
-	if (OPT(n))
-		opts.opt |= opt_l;
+//	if (OPT(n))
+//		opts.opt |= opt_l;
 
 	//	-L implicit opt H
-	if (OPT(L))
-		opts.opt |= opt_H;
+//	if (OPT(L))
+//		opts.opt |= opt_H;
 
 	// -L cancel -P
-	if (OPT(L))
-		opts.opt &= ~opt_P;
+//	if (OPT(L))
+//		opts.opt &= ~opt_P;
 
 	//	-H  is assumed if none of the -F, -d, or -l options are specified.
-	if (!(OPT(d)) && !(OPT(l)) && !(OPT(F)))
-		opts.opt |= opt_H;
+//	if (!(OPT(d)) && !(OPT(l)) && !(OPT(F)))
+//		opts.opt |= opt_H;
 
 	// -P cancel -H
-	if (OPT(P))
-		opts.opt &= ~opt_H;
+//	if (OPT(P))
+//		opts.opt &= ~opt_H;
 
-	sopt(&opts);
+//	sopt(&opts);
 }

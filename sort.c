@@ -6,7 +6,7 @@
 /*   By: asougako <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 15:45:58 by asougako          #+#    #+#             */
-/*   Updated: 2017/11/28 17:01:43 by asougako         ###   ########.fr       */
+/*   Updated: 2017/11/30 19:48:54 by asougako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,33 +16,33 @@ static int64_t (*choose_sort_func(void))(void*, void*)
 {
 	int64_t (*sort_func_ptr)(void*, void*);
 
-	if (OPT(r))
+	if (opt_r)
 	{
 		sort_func_ptr = &rev_name_sort; //default
-		(OPT(S)) ? sort_func_ptr = &rev_size_sort: 0;//    size
-		(OPT(t)) ? sort_func_ptr = &rev_mtime_sort: 0; //  m_time
-		if ((OPT(l)) && !(OPT(t)));
+		(opt_S) ? sort_func_ptr = &rev_size_sort: 0;//    size
+		(opt_t) ? sort_func_ptr = &rev_mtime_sort: 0; //  m_time
+		if ((opt_l) && !(opt_t));
 		else
 		{
-			(OPT(u)) ? sort_func_ptr = &rev_atime_sort: 0; //  atime
-			(OPT(U)) ? sort_func_ptr = &rev_btime_sort: 0; //  btime
-			(OPT(c)) ? sort_func_ptr = &rev_ctime_sort: 0; //  ctime
+			(opt_u) ? sort_func_ptr = &rev_atime_sort: 0; //  atime
+			(opt_U) ? sort_func_ptr = &rev_btime_sort: 0; //  btime
+			(opt_c) ? sort_func_ptr = &rev_ctime_sort: 0; //  ctime
 		}
 	}
 	else
 	{
 		sort_func_ptr = &name_sort; //default
-		(OPT(S)) ? sort_func_ptr = &size_sort: 0;//    size
-		(OPT(t)) ? sort_func_ptr = &mtime_sort: 0; //  m_time
-		if ((OPT(l)) && !(OPT(t)));
+		(opt_S) ? sort_func_ptr = &size_sort: 0;//    size
+		(opt_t) ? sort_func_ptr = &mtime_sort: 0; //  m_time
+		if ((opt_l) && !(opt_t));
 		else
 		{
-			(OPT(u)) ? sort_func_ptr = &atime_sort: 0; //  atime
-			(OPT(U)) ? sort_func_ptr = &btime_sort: 0; //  btime
-			(OPT(c)) ? sort_func_ptr = &ctime_sort: 0; //  ctime
+			(opt_u) ? sort_func_ptr = &atime_sort: 0; //  atime
+			(opt_U) ? sort_func_ptr = &btime_sort: 0; //  btime
+			(opt_c) ? sort_func_ptr = &ctime_sort: 0; //  ctime
 		}
 	}
-	(OPT(f)) ? sort_func_ptr = &no_sort: 0;
+	(opt_f) ? sort_func_ptr = &no_sort: 0;
 	return(sort_func_ptr);
 }
 

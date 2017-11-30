@@ -20,7 +20,7 @@ char	*str_error_access(char *err, char *file)
 	char	*buff;
 
 	index = 0;
-	buff = ft_strnew(sizeof(*buff) * ft_strlen(err) + ft_strlen(file) + 666);
+	buff = ft_strnew(ft_strlen(err) + ft_strlen(file) + 9);
 	ft_strcpy(buff + index, "ft_ls: ");
 	index += 7;
 	ft_strcpy(buff + index, file);

@@ -56,9 +56,9 @@ void    recursive(t_list *file_lst)
 	t_stat      fstat;
 	int         (*stat_func)(const char *restrict, struct stat *restrict);
 
-	if (OPT(R))
+	if (opt_R)
 	{
-		if (OPT(L))
+		if (opt_L)
 			stat_func = &stat;
 		else
 			stat_func = &lstat;

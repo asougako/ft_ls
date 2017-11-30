@@ -6,11 +6,11 @@
 #define FILE_NAME_ISNT(name) ft_strcmp(FILE_NAME, name)
 int     is_printable(char *name)
 {
-    if (OPT(a))
+    if (opt_a)
     {
         return(true);
     }
-    else if (OPT(A))
+    else if (opt_A)
     {
         if (FILE_NAME_ISNT(".") != 0 && FILE_NAME_ISNT("..") != 0)
         {
@@ -44,7 +44,7 @@ void    read_dir(char **dir)
 	file_lst = NULL;
 	//fstat = NULL;
 	path = NULL;
-	if (OPT(L))
+	if (opt_L)
 	{
 		stat_func = &stat;
 	}
@@ -91,9 +91,9 @@ void    process_dirs(char **argv, int argc)
 	int         (*stat_func)(const char *restrict, struct stat *restrict);
 	int index;
 
-	index = 0;
 
-	if (OPT(L) || OPT(H))
+	index = 0;
+	if (opt_L || opt_H)
 		stat_func = &stat;
 	else
 		stat_func = &lstat;
@@ -101,9 +101,9 @@ void    process_dirs(char **argv, int argc)
 	while(*argv)
 	{
 		if (stat_func(*argv, &fstat) != 0);
-		else if (S_ISDIR(fstat.st_mode) && !(OPT(d)))
+		else if (S_ISDIR(fstat.st_mode) && !(opt_d))
 		{
-			if (index > 0 || argc > 2)
+			if (index > 0 || (argc - ft_optind) >= 2)
 			{
 				ft_putendl("");
 				ft_putstr(*argv);

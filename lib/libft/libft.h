@@ -6,7 +6,7 @@
 /*   By: asougako <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/07 11:21:17 by asougako          #+#    #+#             */
-/*   Updated: 2017/06/02 12:55:41 by asougako         ###   ########.fr       */
+/*   Updated: 2017/11/30 19:35:20 by asougako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,12 @@ enum				e_types{
 	d_func_ptr
 };
 
+typedef enum e_bool
+{
+	false,
+	true = !false
+}                       t_bool;
+
 typedef union		u_definition{
 	char				sc;
 	short				ss;
@@ -91,8 +97,8 @@ typedef struct		s_list
 }					t_list;
 
 /*
-** Base functions.
-*/
+ ** Base functions.
+ */
 void	*ft_memset(void *src, int filler, size_t len);
 void	ft_bzero(void *src, size_t len);
 void	*ft_memcpy(void *dst, const void *src, size_t len);
@@ -151,8 +157,8 @@ void	ft_putendl_fd(char const *s, int fd);
 void	ft_putnbr_fd(int n, int fd);
 
 /*
-** Bonus functions.
-*/
+ ** Bonus functions.
+ */
 t_list				*ft_lstnew(void const *content, size_t content_size);
 void				ft_lstdelone(t_list **alst, void (*del)(void *, size_t));
 void				ft_lstdel(t_list **alst, void (*del)(void *, size_t));
@@ -161,8 +167,8 @@ void				ft_lstiter(t_list *lst, void (*f)(t_list *elem));
 t_list				*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem));
 
 /*
-** Extra functions.
-*/
+ ** Extra functions.
+ */
 int					ft_isspace(int c);
 size_t				ft_intlen(uint64_t u_i, size_t base);
 char				*ft_uitoa(uint64_t u_n);
@@ -174,9 +180,9 @@ size_t				ft_strtab_len(char **src);
 void				ft_lstadd_tail(t_list **alst, t_list *new);
 char				*ft_strndup(const char *src, size_t size);
 int					ft_lstdelif(t_list **list, void *match,\
-						int(*del)(void*, size_t, void*));
+		int(*del)(void*, size_t, void*));
 void				*ft_lstchr(t_list **list, void *match,\
-						int(*fnc)(void*, size_t, void*));
+		int(*fnc)(void*, size_t, void*));
 t_list				*ft_dict_new(char *format, ...);
 t_list				*ft_dict_add(t_list *dict_1, t_list *dict_2);
 int					ft_dict_del(t_list **dict);
@@ -189,6 +195,6 @@ void				ft_print_memory(const void *addr, size_t size);
 char				*ft_lowstr(char *src);
 char				*ft_uppstr(char *src);
 void				ft_qsort(void *base, size_t nmemb, size_t size,\
-						int (*compar)(const void *, const void *));
+		int (*compar)(const void *, const void *));
 
 #endif

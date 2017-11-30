@@ -12,17 +12,17 @@ void    print_error_lst(t_list *error_lst)
 
 void    print_file_lst(t_list *file_lst)
 {
-	if(OPT(l))
+	if(opt_l)
 	{
 		print_file_lst_long(file_lst);
 	}
 	else
 	{
-		if (OPT(x))
+		if (opt_x)
 			print_file_lst_short_across(file_lst);
-		else if (OPT(m))
+		else if (opt_m)
 			print_file_lst_short_across_comma(file_lst);
-		else if (OPT(1))
+		else if (opt_1)
 			print_one_per_line(file_lst);
 		else
 			print_file_lst_short(file_lst);
