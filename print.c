@@ -29,7 +29,7 @@ void    print_file_lst(t_list *file_lst)
 	}
 }
 
-#define FILE_NAME (*(t_xstat*)(*file_lst).content).name
+#define FILE_NAME (*(t_xstat*)(*file_lst).content).str_name
 int	get_name_max_size(t_list *file_lst)
 {
 	int	maxsize;
@@ -46,8 +46,6 @@ int	get_name_max_size(t_list *file_lst)
 		file_lst = (*file_lst).next;
 	}
 	maxsize++;
-//	while ((maxsize % 8) != 0)
-//		maxsize++;
 	return(maxsize);
 }
 
@@ -101,12 +99,12 @@ void	print_one_per_line(t_list *file_lst)
 {
 	while(file_lst != NULL)
 	{
-		ft_putendl((*(t_xstat*)(*file_lst).content).name);
+		ft_putendl((*(t_xstat*)(*file_lst).content).str_name);
 		file_lst = (*file_lst).next;
 	}
 }
 
-#define NAME  (**(tab + (col * line_nb) + line)).name
+#define NAME  (**(tab + (col * line_nb) + line)).str_name
 void    print_file_lst_short(t_list *file_lst)
 {
 	t_xstat	**tab;

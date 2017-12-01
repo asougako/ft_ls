@@ -188,7 +188,8 @@ void	get_suffixe(t_list *file_link)
 	index = 0;
 	if (type != NULL)
 	{
-		STR_SUFX = ft_strcpy(STR_SUFX, type);
+//		STR_SUFX = ft_strcpy(STR_SUFX, type);
+		STR_NAME = ft_strjoin(STR_NAME, type);
 		index++;
 	}
 	if (reflnk != NULL)
@@ -274,9 +275,9 @@ void    add_file(t_list **file_lst, t_stat *fstat, char *dir, char *file)
 	//STR_NAME = ft_strdup(file);
 	STR_NAME = color_name(file_link, file);
 
+	get_suffixe(file_link);
 	if (opt_l)
 	{
-		get_suffixe(file_link);
 		if (dir == NULL)
 		{
 			get_xattr(file_link);
