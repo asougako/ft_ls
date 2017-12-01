@@ -118,7 +118,7 @@ typedef struct	s_col_max_width
 
 //FUNCTIONS//
 //sort
-void	argv_sort(char **argv);
+void	argv_sort(char **argv, int argc);
 int32_t	ft_lstsort(t_list **head, t_list *link);
 int64_t	name_sort(void *content1, void *content2);
 int64_t	size_sort(void *content1, void *content2);
@@ -140,8 +140,8 @@ void    implicit_opts(void);
 //process
 char *path_to_file(char *path);
 void    process_args(char **argv, int argc);
-void    process_dirs(char **argv, int argc);
-void	process_files(char **argv);
+int		process_files(char **argv);
+void    process_dirs(char **argv, int argc, int index);
 void   add_error(t_list **error_lst, char *err, char *file);
 void	add_file(t_list **file_lst, t_stat *stat, char *dir, char *file);
 void	read_dir(char **dir);
@@ -168,7 +168,8 @@ char    *get_minor(t_list *link);
 char    *get_size(t_list *link);
 char    *get_date(t_list *link);
 char    *acl_get(t_list *link);
-char *get_referred_link(t_list *file_link);
+char	*get_referred_link(t_list *file_link);
+void    put_help(void);
 
 //error
 char    *av0(char **argv);

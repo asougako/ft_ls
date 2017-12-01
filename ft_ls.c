@@ -1,8 +1,5 @@
-/*	TO DO
-	- hide hour if date is more than 6 months ago or in the future
-	- SEGV /private/etc
- */
 
+// ls -i .
 
 /*base opts:
 x	-l	List in long format.  (See below.)  If the output is to a ter-
@@ -35,6 +32,7 @@ x	-H	Symbolic links on the command line are followed.  This option is assumed if
 	-h	When used with the -l option, use unit suffixes: Byte, Kilobyte, Megabyte, Gigabyte, Terabyte
 			and Petabyte in order to reduce the number of digits to three or less using base 2 for sizes.
 x	-i	For each file, print the file's file serial number (inode number).
+	-I	Options infos.
 	-k	If the -s option is specified, print the file size allocation in kilobytes, not blocks.  This
 			option overrides the environment variable BLOCKSIZE.
 x	-L	Follow all symbolic links to final target and list the file or directory the link references
@@ -49,8 +47,6 @@ x	-p	Write a slash (`/') after each filename if that file is a directory.
 x	-S	Sort files by size
 x	-T	When used with the -l (lowercase letter ``ell'') option, display complete time information for
 			the file, including month, day, hour, minute, second, and year.
-x	-t	Sort by time modified (most recently modified first) before sorting the operands by lexico-
-			graphical order.
 x	-u	Use time of last access, instead of last modification of the file for sorting (-t) or long
 			printing (-l).
 x	-U	Use time of file creation, instead of last modification for sorting (-t) or long output (-l).
@@ -61,9 +57,6 @@ x	-x	The same as -C, except that the multi-column output is produced with entrie
   used.
 
   The -c and -u options override each other; the last one specified determines the file time used.
-
-  The -B, -b, -w, and -q options all override each other; the last one specified determines the format
-  used for non-printable characters.
 
   The -H, -L and -P options all override each other (either partially or fully); they are applied in the
   order specified.
@@ -81,6 +74,7 @@ t_bool opt_at;
 t_bool opt_1;
 t_bool opt_A;
 t_bool opt_a;
+t_bool opt_C;
 t_bool opt_c;
 t_bool opt_d;
 t_bool opt_e;
@@ -90,6 +84,7 @@ t_bool opt_G;
 t_bool opt_g;
 t_bool opt_H;
 t_bool opt_h;
+t_bool opt_I;
 t_bool opt_i;
 t_bool opt_k;
 t_bool opt_l;
@@ -108,7 +103,7 @@ t_bool opt_U;
 t_bool opt_u;
 t_bool opt_x;
 
-#define VALID_OPT "ABCFGHLOPRSTUWabcdefghiklmnopqrstuwx1@"
+#define VALID_OPT "@1AaCcdeFfGgHhIikLlmnoPpRrSTtuUx"
 void	put_synopsis(void)
 {
 	ft_putstr("usage: ft_ls [-");
@@ -124,37 +119,107 @@ void	get_options(int argc, char *argv[])
 	opt = 0;
 	while ((opt = ft_getopt(argc, argv, VALID_OPT)) != -1)
 	{
-		opt == '@'? opt_at = true: 0;
-		opt == '1'? opt_1 = true: 0;
-		opt == 'A'? opt_A = true: 0;
-		opt == 'a'? opt_a = true: 0;
-		opt == 'c'? opt_c = true: 0;
-		opt == 'd'? opt_d = true: 0;
-		opt == 'e'? opt_e = true: 0;
-		opt == 'F'? opt_F = true: 0;
-		opt == 'f'? opt_f = true: 0;
-		opt == 'G'? opt_G = true: 0;
-		opt == 'g'? opt_g = true: 0;
-		opt == 'H'? opt_H = true: 0;
-		opt == 'h'? opt_h = true: 0;
-		opt == 'i'? opt_i = true: 0;
-		opt == 'k'? opt_k = true: 0;
-		opt == 'l'? opt_l = true: 0;
-		opt == 'L'? opt_L = true: 0;
-		opt == 'm'? opt_m = true: 0;
-		opt == 'n'? opt_n = true: 0;
-		opt == 'o'? opt_o = true: 0;
-		opt == 'P'? opt_P = true: 0;
-		opt == 'p'? opt_p = true: 0;
-		opt == 'R'? opt_R = true: 0;
-		opt == 'r'? opt_r = true: 0;
-		opt == 'S'? opt_S = true: 0;
-		opt == 'T'? opt_T = true: 0;
-		opt == 't'? opt_t = true: 0;
-		opt == 'U'? opt_U = true: 0;
-		opt == 'u'? opt_u = true: 0;
-		opt == 'x'? opt_x = true: 0;
-		opt == '?'? put_synopsis(): 0;
+		if (opt == '@')
+			opt_at = true;
+		if (opt == '1')
+		{
+			opt_1 = true;
+			opt_C = false;
+			opt_m = false;
+			opt_l = false;
+			opt_x = false;
+		}
+		if (opt == 'A')
+			opt_A = true;
+		if (opt == 'a')
+			opt_a = true;
+		if (opt == 'C')
+		{
+			opt_1 = false;
+			opt_l = false;
+			opt_m = false;
+			opt_x = false;
+		}
+		if (opt == 'c')
+		{
+			opt_c = true;
+			opt_u = false;
+		}
+		if (opt == 'd')
+			opt_d = true;
+		if (opt == 'e')
+			opt_e = true;
+		if (opt == 'F')
+			opt_F = true;
+		if (opt == 'f')
+			opt_f = true;
+		if (opt == 'G')
+			opt_G = true;
+		if (opt == 'g')
+			opt_g = true;
+		if (opt == 'H')
+			opt_H = true;
+		if (opt == 'h')
+			opt_h = true;
+		if (opt == 'I')
+			opt_I = true;
+		if (opt == 'i')
+			opt_i = true;
+		if (opt == 'k')
+			opt_k = true;
+		if (opt == 'l')
+		{
+			opt_l = true;
+			opt_C = false;
+			opt_1 = false;
+			opt_m = false;
+			opt_x = false;
+		}
+		if (opt == 'L')
+			opt_L = true;
+		if (opt == 'm')
+		{
+			opt_m = true;
+			opt_1 = false;
+			opt_C = false;
+			opt_l = false;
+			opt_x = false;
+		}
+		if (opt == 'n')
+			opt_n = true;
+		if (opt == 'o')
+			opt_o = true;
+		if (opt == 'P')
+			opt_P = true;
+		if (opt == 'p')
+			opt_p = true;
+		if (opt == 'R')
+			opt_R = true;
+		if (opt == 'r')
+			opt_r = true;
+		if (opt == 'S')
+			opt_S = true;
+		if (opt == 'T')
+			opt_T = true;
+		if (opt == 't')
+			opt_t = true;
+		if (opt == 'U')
+			opt_U = true;
+		if (opt == 'u')
+		{
+			opt_u = true;
+			opt_c = false;
+		}
+		if (opt == 'x')
+		{
+			opt_x = true;
+			opt_1 = false;
+			opt_C = false;
+			opt_m = false;
+			opt_l = false;
+		}
+		if (opt == '?')
+			put_synopsis();
 	}
 }
 
@@ -165,29 +230,25 @@ int		main(int argc, char **argv)
 	//get options
 	get_options(argc, argv);
 
-	//	if (OPTL("help"))
-	//	{
-	//		put_help();
-	//		return(0);
-	//	}
+	//	opt_1 = true;
+
+	if (opt_I)
+	{
+		put_help();
+		return(0);
+	}
 
 	//sort argv
-	argv_sort(argv + ft_optind);
+	argv_sort(argv + ft_optind, argc);
 
 	//send args to process
-	int index = 0;
-	while (*(argv + index) != NULL)
-	{
-//		printf("argv[%d] = %s\n", index, *(argv + index));
-		index++;
-	}
 	if ((argc - ft_optind) == 0)
 	{
-		defaut = (char**)ft_memalloc(sizeof(*defaut) * 3);
-		*(defaut + 1) = ft_strdup(".");
-		*(defaut + 2) = NULL;
+		defaut = (char**)ft_memalloc(sizeof(*defaut) * 2);
+		*(defaut + 0) = ft_strdup(".");
+		*(defaut + 1) = NULL;
 		process_args(defaut, ft_optind);
-		ft_strdel(defaut + 1);
+		ft_strdel(defaut + 0);
 		ft_memdel((void**)&defaut);
 	}
 	else

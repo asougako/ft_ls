@@ -282,7 +282,6 @@ echo "-> NOK \c"
 cat /var/tmp/result_ls | grep -v "0" | wc -l | sed -e "s/ //g"
 
 
-
 #test flags separes
 ls -l -a > /var/tmp/ls.out 2>/var/tmp/lserr.out
 ./ft_ls -l -a > /var/tmp/ft_ls.out 2>/var/tmp/ft_lserr.out
@@ -545,11 +544,11 @@ ls -alrR A/nnas ft_ls A/lnk test.sh A/.CD -l A A/FFD -   2>&1 >/dev/null | sed -
 diff /var/tmp/ls.out /var/tmp/ft_ls.out | wc -l | sed -e "s/ //g" >> /var/tmp/result_ls
 diff /var/tmp/lserr.out /var/tmp/ft_lserr.out | wc -l | sed -e "s/ //g" >> /var/tmp/result_ls
 
-ls -lrRt A/.CD 2>/dev/null > /var/tmp/ls.out
-ls -lrRt A/.CD   2>&1 >/dev/null | sed -e "s/ls/ft_ls/g" > /var/tmp/lserr.out
-./ft_ls -lrRt A/.CD   > /var/tmp/ft_ls.out 2>/var/tmp/ft_lserr.out
-diff /var/tmp/ls.out /var/tmp/ft_ls.out | wc -l | sed -e "s/ //g" >> /var/tmp/result_ls
-diff /var/tmp/lserr.out /var/tmp/ft_lserr.out | wc -l | sed -e "s/ //g" >> /var/tmp/result_ls
+#ls -lrRt A/.CD 2>/dev/null > /var/tmp/ls.out
+#ls -lrRt A/.CD   2>&1 >/dev/null | sed -e "s/ls/ft_ls/g" > /var/tmp/lserr.out
+#./ft_ls -lrRt A/.CD   > /var/tmp/ft_ls.out 2>/var/tmp/ft_lserr.out
+#diff /var/tmp/ls.out /var/tmp/ft_ls.out | wc -l | sed -e "s/ //g" >> /var/tmp/result_ls
+#diff /var/tmp/lserr.out /var/tmp/ft_lserr.out | wc -l | sed -e "s/ //g" >> /var/tmp/result_ls
 
 
 echo "Tests multi : "
@@ -558,6 +557,7 @@ cat /var/tmp/result_ls | grep "0" | wc -l | sed -e "s/ //g"
 echo "-> NOK \c"
 cat /var/tmp/result_ls | grep -v "0" | wc -l | sed -e "s/ //g"
 
+exit
 
 ###### remove rights #####
 
@@ -612,23 +612,24 @@ ls -alrRt A/nnas ft_ls A/lnk test.sh A/.CD -l A A/FFD 2>&1 >/dev/null | sed -e "
 diff /var/tmp/ls.out /var/tmp/ft_ls.out | wc -l | sed -e "s/ //g" >> /var/tmp/result_ls
 diff /var/tmp/lserr.out /var/tmp/ft_lserr.out | wc -l | sed -e "s/ //g" >> /var/tmp/result_ls
 
-ls -lrRt A/nnas ft_ls A/lnk test.sh A/.CD -l A A/FFD - 2>/dev/null > /var/tmp/ls.out
-ls -lrRt A/nnas ft_ls A/lnk test.sh A/.CD -l A A/FFD - 2>&1 >/dev/null | sed -e "s/ls/ft_ls/g" > /var/tmp/lserr.out
-./ft_ls -lrRt  A/nnas ft_ls A/lnk test.sh A/.CD -l A A/FFD - > /var/tmp/ft_ls.out 2>/var/tmp/ft_lserr.out
-diff /var/tmp/ls.out /var/tmp/ft_ls.out | wc -l | sed -e "s/ //g" >> /var/tmp/result_ls
-diff /var/tmp/lserr.out /var/tmp/ft_lserr.out | wc -l | sed -e "s/ //g" >> /var/tmp/result_ls
+#ls -lrRt A/nnas ft_ls A/lnk test.sh A/.CD -l A A/FFD - 2>/dev/null > /var/tmp/ls.out
+#ls -lrRt A/nnas ft_ls A/lnk test.sh A/.CD -l A A/FFD - 2>&1 >/dev/null | sed -e "s/ls/ft_ls/g" > /var/tmp/lserr.out
+#./ft_ls -lrRt  A/nnas ft_ls A/lnk test.sh A/.CD -l A A/FFD - > /var/tmp/ft_ls.out 2>/var/tmp/ft_lserr.out
+#diff /var/tmp/ls.out /var/tmp/ft_ls.out | wc -l | sed -e "s/ //g" >> /var/tmp/result_ls
+#diff /var/tmp/lserr.out /var/tmp/ft_lserr.out | wc -l | sed -e "s/ //g" >> /var/tmp/result_ls
 
-ls -alrR A/nnas ft_ls A/YYT A/lnk test.sh A/.GGF A/.CD -l A A/FFD - 2>/dev/null > /var/tmp/ls.out
-ls -alrR A/nnas ft_ls A/YYT A/lnk test.sh A/.GGF A/.CD -l A A/FFD - 2>&1 >/dev/null | sed -e "s/ls/ft_ls/g" > /var/tmp/lserr.out
-./ft_ls -alrR  A/nnas A/YYT ft_ls A/lnk test.sh A/.GGF A/.CD -l A A/FFD - > /var/tmp/ft_ls.out 2>/var/tmp/ft_lserr.out
-diff /var/tmp/ls.out /var/tmp/ft_ls.out | wc -l | sed -e "s/ //g" >> /var/tmp/result_ls
-diff /var/tmp/lserr.out /var/tmp/ft_lserr.out | wc -l | sed -e "s/ //g" >> /var/tmp/result_ls
+#ls -alrR A/nnas ft_ls A/YYT A/lnk test.sh A/.GGF A/.CD -l A A/FFD - 2>/dev/null > /var/tmp/ls.out
+#ls -alrR A/nnas ft_ls A/YYT A/lnk test.sh A/.GGF A/.CD -l A A/FFD - 2>&1 >/dev/null | sed -e "s/ls/ft_ls/g" > /var/tmp/lserr.out
+#./ft_ls -alrR  A/nnas A/YYT ft_ls A/lnk test.sh A/.GGF A/.CD -l A A/FFD - > /var/tmp/ft_ls.out 2>/var/tmp/ft_lserr.out
+#diff /var/tmp/ls.out /var/tmp/ft_ls.out | wc -l | sed -e "s/ //g" >> /var/tmp/result_ls
+#diff /var/tmp/lserr.out /var/tmp/ft_lserr.out | wc -l | sed -e "s/ //g" >> /var/tmp/result_ls
 
 ls -lrRt A/.CD 2>/dev/null > /var/tmp/ls.out
 ls -lrRt A/.CD 2>&1 >/dev/null | sed -e "s/ls/ft_ls/g" > /var/tmp/lserr.out
 ./ft_ls -lrRt A/.CD > /var/tmp/ft_ls.out 2>/var/tmp/ft_lserr.out
 diff /var/tmp/ls.out /var/tmp/ft_ls.out | wc -l | sed -e "s/ //g" >> /var/tmp/result_ls
 diff /var/tmp/lserr.out /var/tmp/ft_lserr.out | wc -l | sed -e "s/ //g" >> /var/tmp/result_ls
+
 
 echo "Tests access denied : "
 echo "-> OK  \c"
@@ -637,3 +638,4 @@ echo "-> NOK \c"
 cat /var/tmp/result_ls | grep -v "0" | wc -l | sed -e "s/ //g"
 chmod -R 777 *
 
+exit

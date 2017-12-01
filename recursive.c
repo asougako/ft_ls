@@ -8,7 +8,6 @@ int             check_loop(ino_t new_inode, uint32_t option)
     t_list              *ino_lnk;
     t_list              *tmp;
 
-
 //	tmp = ino_lst;
 //	while (tmp != NULL)
 //	{
@@ -74,7 +73,6 @@ void    recursive(t_list *file_lst)
 				}
 				else if (S_ISDIR(FILE_MODE))
 				{
-					//printf("Check new inode %llu\n", fstat.st_ino);
 					if (check_loop(fstat.st_ino, NORESET))
 					{
 						print_error_loop(FILE_NAME);
@@ -85,9 +83,7 @@ void    recursive(t_list *file_lst)
 						ft_putstr(path);
 						ft_putendl(":");
 						read_dir(&path);
-					//del last inode
-					//printf("Deleting last inode.\n");
-					check_loop(0, DELLAST);
+						check_loop(0, DELLAST);
 					}
 				}
 				ft_strdel(&path);

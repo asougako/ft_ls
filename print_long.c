@@ -6,7 +6,7 @@
 /*   By: asougako <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 14:17:53 by asougako          #+#    #+#             */
-/*   Updated: 2017/11/30 19:42:52 by asougako         ###   ########.fr       */
+/*   Updated: 2017/12/01 17:56:28 by asougako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,16 +33,29 @@
 #define STR_XATTR	(*CONTENT).str_xattr
 #define STR_ACL		(*CONTENT).str_acl
 
-void	print_col(char *field, uint16_t width)
-{
-	uint16_t		index;
 
-	if (ft_isdigit(*field))
+#define J_LEFT 0
+#define J_RIGHT 1
+void	print_col(char *field, uint16_t width, t_bool justify)
+{
+	uint16_t	index;
+//	char		*tmp;
+//	t_bool		is_number;
+
+//	tmp = field;
+//	is_number = true;
+//	while (*tmp)
+//	{
+//		if (!ft_isdigit(*tmp))
+//			is_number = false;
+//		tmp++;
+//	}
+	if (justify == J_RIGHT)
 	{
 		index = ft_strlen(field);
 		while (index < width)
 		{
-			ft_putchar(0x20);
+			ft_putchar(' ');
 			index++;
 		}
 		ft_putstr(field);
@@ -53,11 +66,11 @@ void	print_col(char *field, uint16_t width)
 		index = ft_strlen(field);
 		while (index < (width))
 		{
-			ft_putchar(0x20);
+			ft_putchar(' ');
 			index++;
 		}
 	}
-	ft_putchar(0x20);
+	ft_putchar(' ');
 }
 
 char	*get_block_total(t_list *link)
@@ -71,6 +84,8 @@ char	*get_block_total(t_list *link)
 		total += (*(*CONTENT).stat).st_blocks;
 		link = (*link).next;
 	}
+	if (opt_k)
+		total /= 2;
 	ret = ft_itoa(total);
 	return(ret);
 }
@@ -93,7 +108,7 @@ void	print_file_lst_long(t_list *file_lst)
 	colw = (t_col_max_width*)ft_memalloc(sizeof(*colw));
 	get_long_infos(file_lst, colw);
 	link = file_lst;
-	if (file_lst != NULL)
+	if (file_lst != NULL && FILE_PATH != NULL)
 	{
 		block_total = get_block_total(file_lst);
 		ft_putstr("total ");
@@ -104,29 +119,29 @@ void	print_file_lst_long(t_list *file_lst)
 	{
 		if (opt_i)
 		{
-			print_col(STR_INODE, INODE_WIDTH);
+			print_col(STR_INODE, INODE_WIDTH, J_RIGHT);
 		}
-		print_col(STR_MODE, 11);
-		print_col(STR_LINK, LINK_WIDTH);
+		print_col(STR_MODE, 11, J_LEFT);
+		print_col(STR_LINK, LINK_WIDTH, J_RIGHT);
 		if (!(opt_g))
 		{
-			print_col(STR_USER, USER_WIDTH);
+			print_col(STR_USER, USER_WIDTH, J_LEFT);
 			ft_putchar(0x20);
 		}
 		if (!(opt_o))
 		{
-			print_col(STR_GROUP, GROUP_WIDTH + 1);
+			print_col(STR_GROUP, GROUP_WIDTH + 1, J_LEFT);
 		}
 		if (S_ISCHR(FILE_TYPE) || S_ISBLK(FILE_TYPE))
 		{
-			print_col(STR_MAJOR, 4);
-			print_col(STR_MINOR, 3);
+			print_col(STR_MAJOR, 4, J_RIGHT);
+			print_col(STR_MINOR, 3, J_RIGHT);
 		}
 		else
 		{
-			print_col(STR_SIZE, SIZE_WIDTH);
+			print_col(STR_SIZE, SIZE_WIDTH, J_RIGHT);
 		}
-		print_col(STR_DATE, DATE_WIDTH);
+		print_col(STR_DATE, DATE_WIDTH, J_LEFT);
 
 		ft_putstr(STR_NAME);
 		ft_putendl(STR_SUFX);
@@ -159,21 +174,16 @@ void	get_long_infos(t_list *head, t_col_max_width *colw)
 			if ((tmp = ft_strlen((*CONTENT).str_inode)) > INODE_WIDTH)
 				INODE_WIDTH = tmp;
 		}
-
 		(*CONTENT).str_mode = get_rights(link);
-
 		(*CONTENT).str_link = get_links(link);
 		if ((tmp = ft_strlen((*CONTENT).str_link)) > LINK_WIDTH)
 			LINK_WIDTH = tmp;
-
 		(*CONTENT).str_user = get_user(link);
 		if ((tmp = ft_strlen((*CONTENT).str_user)) > USER_WIDTH)
 			USER_WIDTH = tmp;
-
 		(*CONTENT).str_group = get_group(link);
 		if ((tmp = ft_strlen((*CONTENT).str_group)) > GROUP_WIDTH)
 			GROUP_WIDTH = tmp;
-
 		if (S_ISCHR(FILE_TYPE) || S_ISBLK(FILE_TYPE))
 		{
 			(*CONTENT).str_major = get_major(link);
@@ -193,7 +203,6 @@ void	get_long_infos(t_list *head, t_col_max_width *colw)
 			if (tmp > (MAJOR_WIDTH + MINOR_WIDTH))
 				MAJOR_WIDTH = (tmp - MINOR_WIDTH) - 1;
 		}
-
 		(*CONTENT).str_date = get_date(link);
 		if ((tmp = ft_strlen((*CONTENT).str_date)) > DATE_WIDTH)
 			DATE_WIDTH = tmp;
@@ -280,11 +289,15 @@ char	*get_user(t_list *link)
 	ret = NULL;
 	passwd = NULL;
 	if (opt_n)
-		ret = ft_strdup(ft_itoa((*(*CONTENT).stat).st_uid));
+	{
+		ret = ft_itoa((*(*CONTENT).stat).st_uid);
+	}
 	else
 	{
-		passwd = getpwuid((*(*CONTENT).stat).st_uid);
-		ret = ft_strdup((*passwd).pw_name);
+		if ((passwd = getpwuid((*(*CONTENT).stat).st_uid)) == 0)
+			ret = ft_itoa((*(*CONTENT).stat).st_uid);
+		else
+			ret = ft_strdup((*passwd).pw_name);
 	}
 	return(ret);
 }
@@ -292,16 +305,21 @@ char	*get_user(t_list *link)
 char	*get_group(t_list *link)
 {
 	char	*ret;
-	struct group *group = NULL;
+	struct group *group;
 
+
+	ret = NULL;
+	group = NULL;
 	if (opt_n)
 	{
-		ret = ft_strdup(ft_itoa((*(*CONTENT).stat).st_gid));
+		ret = ft_itoa((*(*CONTENT).stat).st_gid);
 	}
 	else
 	{
-		group = getgrgid((*(*CONTENT).stat).st_gid);
-		ret = ft_strdup((*group).gr_name);
+		if ((group = getgrgid((*(*CONTENT).stat).st_gid)) == 0)
+			ret = ft_itoa((*(*CONTENT).stat).st_gid);
+		else
+			ret = ft_strdup((*group).gr_name);
 	}
 	return(ret);
 }
@@ -327,6 +345,7 @@ char	*get_size(t_list *link)
 	return (ft_itoa((*(*CONTENT).stat).st_size));
 }
 
+#define SIX_MONTHS 15552000
 #define FILE_ATIME (*(*CONTENT).stat).st_atime
 #define FILE_BTIME (*(*CONTENT).stat).st_birthtime
 #define FILE_CTIME (*(*CONTENT).stat).st_ctime
@@ -335,7 +354,7 @@ char	*get_date(t_list *link)
 {
 	char	*ret;
 	char	*tmp;
-	char	*cut;
+	time_t	now;
 	time_t	file_time;
 
 	if (opt_l && opt_u)
@@ -346,21 +365,16 @@ char	*get_date(t_list *link)
 		file_time = (*(*CONTENT).stat).st_ctime;
 	else
 		file_time = (*(*CONTENT).stat).st_mtime;
-
-//	time_t now;
-//	now = time(NULL);
-//	pf(ctime(&now), s);
-//	pf(ctime(&file_time), s);
-//
-
+	now = time(NULL);
+	ret = ft_strnew(20);
 	tmp = ft_strdup(ctime(&file_time));
+	ft_strncpy(ret, tmp + 4, 7);
 	if (opt_T)
-		cut = tmp + 24;
+		ft_strncpy(ret + 7, tmp + 11, 13);
+	else if (file_time > now || file_time  < now - SIX_MONTHS)
+		ft_strncpy(ret + 7, tmp + 19, 5);
 	else
-		cut = tmp + 16;
-
-	*cut = '\0';
-	ret = ft_strdup(tmp + 4);
+		ft_strncpy(ret + 7, tmp + 11, 5);
 	ft_memdel((void**)&tmp);
 	return(ret);
 }

@@ -64,7 +64,6 @@ void    read_dir(char **dir)
 			path = path_join(*dir, FILE_NAME);
 			if (stat_func(path, &fstat) != 0)
 			{
-				// !!!!!!!!!!!! check error message order with bad links
 				add_error(&error_lst, strerror(errno), path);
 			}
 			else
@@ -85,14 +84,12 @@ void    read_dir(char **dir)
 }
 #undef FILE_NAME
 
-void    process_dirs(char **argv, int argc)
+void    process_dirs(char **argv, int argc, int index)
 {
 	t_stat      fstat;
 	int         (*stat_func)(const char *restrict, struct stat *restrict);
-	int index;
 
 
-	index = 0;
 	if (opt_L || opt_H)
 		stat_func = &stat;
 	else
@@ -103,9 +100,10 @@ void    process_dirs(char **argv, int argc)
 		if (stat_func(*argv, &fstat) != 0);
 		else if (S_ISDIR(fstat.st_mode) && !(opt_d))
 		{
-			if (index > 0 || (argc - ft_optind) >= 2)
+			if (index > 1 || (argc - ft_optind) >= 2)
 			{
-				ft_putendl("");
+				if (index != 0)
+					ft_putendl("");
 				ft_putstr(*argv);
 				ft_putendl(":");
 			}

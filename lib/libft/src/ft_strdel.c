@@ -6,7 +6,7 @@
 /*   By: asougako <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/07 15:21:20 by asougako          #+#    #+#             */
-/*   Updated: 2016/11/21 15:01:45 by asougako         ###   ########.fr       */
+/*   Updated: 2017/12/01 11:40:32 by asougako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,6 @@
 
 void	ft_strdel(char **as)
 {
-	if (as)
+	if (*as != NULL)
 		ft_memdel((void *)as);
 }

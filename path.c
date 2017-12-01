@@ -3,7 +3,7 @@
 
 char *path_to_file(char *path)
 {
-    return(ft_strrchr(path, '/'));
+    return(ft_strrchr(path, '/') + 1);
 }
 
 char    *path_join(char *dir, char *file)
@@ -12,7 +12,7 @@ char    *path_join(char *dir, char *file)
     size_t      index;
 
 	if (dir == NULL)
-		return(file);
+		return(ft_strdup(file));
     index = 0;
     path = ft_strnew(1 + ft_strlen(dir) + ft_strlen(file));
     ft_strcpy(path + index, dir);

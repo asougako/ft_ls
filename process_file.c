@@ -29,51 +29,55 @@ char *format_str_xattr(char *attr, int size)
 	char *ret;
 	char *del;
 
-	ret = NULL;
 	len = ft_strlen(attr);
-
 	ret = ft_strnew(len + 7);
-
 	*(ret + 0) = '\t';
 	ft_strcpy(ret + 1, attr);
 	*(ret + len + 1) = '\t';
-
 	*(ret + len + 2) = ' ';
 	*(ret + len + 3) = ' ';
 	*(ret + len + 4) = ' ';
 	*(ret + len + 5) = ' ';
-
 	del = ft_itoa(size);
 	ft_strcpy(ret + len + 6 - ft_strlen(del), del);
 	ft_strdel(&del);
-
 	*(ret + len + 6) = '\n';
-
 	return(ret);
 }
 
 static void	get_xattr(t_list *file_link)
 {
-	int size;
-	int index;
-	char *buff;
-	char *path;
-	char *str_xa;
+	int		size;
+	int		index;
+	char	*del1;
+	char	*del2;
+	char	*buff;
+	char	*path;
+	char	*str_xa;
 
 	str_xa = ft_strdup("");;
 	path = path_join(FILE_PATH, FILE_NAME);
 	if ((size = listxattr(path, NULL, 0, XATTR_NOFOLLOW)) <= 0)
+	{
+		ft_strdel(&str_xa);
+		ft_strdel(&path);
 		return;
+	}
 	buff = ft_strnew(size);
 	listxattr(path, buff, size, XATTR_NOFOLLOW);
 	size = 0;
 	index = 0;
 	while ((size = getxattr(path, buff + index, NULL, 0, 0, XATTR_NOFOLLOW)) >= 0)
 	{
-		str_xa = ft_strjoin(str_xa, format_str_xattr(buff, size));
+		del1 = str_xa;
+		del2 = format_str_xattr(buff, size);
+		str_xa = ft_strjoin(str_xa, del2);
+		ft_strdel(&del1);
+		ft_strdel(&del2);
 		index += (ft_strlen(buff + index) + 1);
 	}
 	STR_XATTR = str_xa;
+//	ft_strdel(&str_xa);
 	ft_strdel(&path);
 	ft_strdel(&buff);
 }
@@ -127,7 +131,9 @@ char *get_referred_link(t_list *file_link)
 	ft_strcpy(buff + index, " -> ");
 	index += 4;
 	if (readlink(path, buff + index, PATH_MAX) < 0)
+	{
 		ret = NULL;
+	}
 	else
 	{
 		ret = ft_strdup(buff);
@@ -235,7 +241,7 @@ char	*color_name(t_list	*file_link, char *name)
 	ft_strcpy(ret, color);
 	ft_strcpy(ret + color_len, name);
 	ft_strcpy(ret + color_len + ft_strlen(name), C_NORMAL);
-
+	ft_strdel(&color);
 	return(ret);
 }
 
@@ -287,13 +293,15 @@ void    add_file(t_list **file_lst, t_stat *fstat, char *dir, char *file)
 #undef FILE_XATTR
 #undef FILE_ERROR
 
-void    process_files(char **argv)
+int		process_files(char **argv)
 {
 	t_stat      fstat;
 	t_list      *file_lst;
 	t_list      *error_lst;
 	int         (*stat_func)(const char *restrict, struct stat *restrict);
+	int			index;
 
+	index = 0;
 	file_lst = NULL;
 	error_lst = NULL;
 
@@ -311,6 +319,7 @@ void    process_files(char **argv)
 		else if (!(S_ISDIR(fstat.st_mode)) || (opt_d))
 		{
 			add_file(&file_lst, &fstat, NULL, *argv);
+			index++;
 		}
 		argv++;
 	}
@@ -319,4 +328,5 @@ void    process_files(char **argv)
 		print_file_lst(file_lst);
 	ft_lstdel(&error_lst, errlst_destructor);
 	ft_lstdel(&file_lst, lst_destructor);
+	return(index);
 }
