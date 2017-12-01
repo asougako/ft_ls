@@ -19,7 +19,12 @@ void	add_error(t_list **error_lst, char *err, char *file)
 	error = str_error_access(err, file);
 	if ((error_link = ft_lstnew(error, ft_strlen(error))) == NULL)
 		print_error_malloc(errno);
-	ft_lstadd_tail(error_lst, error_link);
+
+	if (opt_r)
+		ft_lstadd(error_lst, error_link);
+	else
+		ft_lstadd_tail(error_lst, error_link);
+
 	ft_strdel(&error);
 }
 
@@ -77,7 +82,7 @@ static void	get_xattr(t_list *file_link)
 		index += (ft_strlen(buff + index) + 1);
 	}
 	STR_XATTR = str_xa;
-//	ft_strdel(&str_xa);
+	//	ft_strdel(&str_xa);
 	ft_strdel(&path);
 	ft_strdel(&buff);
 }
@@ -85,28 +90,28 @@ static void	get_xattr(t_list *file_link)
 static void	get_acl(t_list	*file_link, char * path)
 {
 	acl_t		acl;
-//	acl_entry_t	*entry;
-//	int			errnum;
+	//	acl_entry_t	*entry;
+	//	int			errnum;
 	ssize_t		*len_p;
 
 
 	//get acl
 	if ((acl = acl_get_file(path, ACL_TYPE_EXTENDED)) == NULL)
 	{
-//			errnum = errno;
-//		 	printf("%s: %s(%d)\n", path, strerror(errnum), errnum);
+		//			errnum = errno;
+		//		 	printf("%s: %s(%d)\n", path, strerror(errnum), errnum);
 		return;
 	}
 
-//	entry = ft_memalloc(sizeof(*entry));
-//	if ((acl_get_entry(acl, ACL_FIRST_ENTRY, entry)) == -1)
-//	{
-//		errnum = errno;
-//		printf("%s: %s(%d)\n", path, strerror(errnum), errnum);
-//		return;
-//	}
+	//	entry = ft_memalloc(sizeof(*entry));
+	//	if ((acl_get_entry(acl, ACL_FIRST_ENTRY, entry)) == -1)
+	//	{
+	//		errnum = errno;
+	//		printf("%s: %s(%d)\n", path, strerror(errnum), errnum);
+	//		return;
+	//	}
 
-//	printf("ACL:%s\n", (*(t_xstat*)(*file_link).content).name);
+	//	printf("ACL:%s\n", (*(t_xstat*)(*file_link).content).name);
 	len_p = NULL;
 	len_p = (ssize_t*)ft_memalloc(sizeof(*len_p));
 	(*(t_xstat*)(*file_link).content).str_acl = acl_to_text(acl, len_p);

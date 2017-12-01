@@ -141,6 +141,7 @@ void    implicit_opts(void);
 char *path_to_file(char *path);
 void    process_args(char **argv, int argc);
 int		process_files(char **argv);
+void    process_error(char *argv[]);
 void    process_dirs(char **argv, int argc, int index);
 void   add_error(t_list **error_lst, char *err, char *file);
 void	add_file(t_list **file_lst, t_stat *stat, char *dir, char *file);

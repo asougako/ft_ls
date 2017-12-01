@@ -6,7 +6,7 @@
 /*   By: asougako <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 14:17:53 by asougako          #+#    #+#             */
-/*   Updated: 2017/12/01 17:56:28 by asougako         ###   ########.fr       */
+/*   Updated: 2017/12/01 19:15:28 by asougako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -365,16 +365,27 @@ char	*get_date(t_list *link)
 		file_time = (*(*CONTENT).stat).st_ctime;
 	else
 		file_time = (*(*CONTENT).stat).st_mtime;
+
 	now = time(NULL);
-	ret = ft_strnew(20);
+	ret = ft_strnew(21);
 	tmp = ft_strdup(ctime(&file_time));
+
 	ft_strncpy(ret, tmp + 4, 7);
 	if (opt_T)
+	{
 		ft_strncpy(ret + 7, tmp + 11, 13);
+	}
 	else if (file_time > now || file_time  < now - SIX_MONTHS)
-		ft_strncpy(ret + 7, tmp + 19, 5);
+	{
+		if (*(tmp + 20) == 0x20)
+			ft_strncpy(ret + 7, tmp + 24, 5);
+		else
+			ft_strncpy(ret + 7, tmp + 19, 5);
+	}
 	else
+	{
 		ft_strncpy(ret + 7, tmp + 11, 5);
+	}
 	ft_memdel((void**)&tmp);
 	return(ret);
 }

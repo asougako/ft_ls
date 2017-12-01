@@ -54,7 +54,7 @@ void    read_dir(char **dir)
 	}
 	if ((dirstream = opendir(*dir)) == NULL)
 	{
-		ft_putendl_fd(str_error_access(strerror(errno), path_to_file(*dir)), 2);
+		ft_putendl_fd(str_error_access(strerror(errno), *dir), 2);
 		return;
 	}
 	while ((direntry = readdir(dirstream)) != NULL)

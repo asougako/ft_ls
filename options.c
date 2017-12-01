@@ -25,7 +25,7 @@ void    implicit_opts(void)
 
 	//	-H  is assumed if none of the -F, -d, or -l options are specified.
 	if (!opt_F && !opt_d && !opt_l)
-		opt_H = false;
+		opt_H = true;
 //	if (!(OPT(d)) && !(OPT(l)) && !(OPT(F)))
 //		opts.opt |= opt_H;
 

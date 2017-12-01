@@ -103,12 +103,14 @@ t_bool opt_U;
 t_bool opt_u;
 t_bool opt_x;
 
-#define VALID_OPT "@1AaCcdeFfGgHhIikLlmnoPpRrSTtuUx"
+//#define VALID_OPT "@1AaCcdeFfGgHhIikLlmnoPpRrSTtuUx"
+#define VALID_OPT "-ABCFGHLOPRSTUWabcdefghiklmnopqrstuwx1"
 void	put_synopsis(void)
 {
-	ft_putstr("usage: ft_ls [-");
-	ft_putstr(VALID_OPT);
-	ft_putendl("] [file ...]");
+//	ft_putstr_fd("usage: ft_ls [-", 2);
+	ft_putstr_fd("usage: ls [-", 2);
+	ft_putstr_fd(VALID_OPT, 2);
+	ft_putendl_fd("] [file ...]", 2);
 	exit(EXIT_FAILURE);
 }
 
@@ -230,7 +232,9 @@ int		main(int argc, char **argv)
 	//get options
 	get_options(argc, argv);
 
-	//	opt_1 = true;
+	implicit_opts();
+
+	opt_1 = true;
 
 	if (opt_I)
 	{

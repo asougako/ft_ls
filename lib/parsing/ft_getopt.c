@@ -6,7 +6,7 @@
 /*   By: asougako <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/30 11:29:44 by asougako          #+#    #+#             */
-/*   Updated: 2017/11/30 19:14:53 by asougako         ###   ########.fr       */
+/*   Updated: 2017/12/01 19:44:19 by asougako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,20 +29,20 @@ static t_bool	is_opt(char *arg)
 static int		put_illegal_error(char *av0)
 {
 	ft_opterr = 1;
-	ft_putstr(av0);
-	ft_putstr(": illegal option -- ");
-	ft_putchar((char)ft_optopt);
-	ft_putendl("");
+	ft_putstr_fd(av0, 2);
+	ft_putstr_fd(": illegal option -- ", 2);
+	ft_putchar_fd((char)ft_optopt, 2);
+	ft_putendl_fd("", 2);
 	return('?');
 }
 
 static int		put_argument_error(char *av0)
 {
 	ft_opterr = 1;
-	ft_putstr(av0);
-	ft_putstr(": option requires an argument -- ");
-	ft_putchar((char)ft_optopt);
-	ft_putendl("");
+	ft_putstr_fd(av0, 2);
+	ft_putstr_fd(": option requires an argument -- ", 2);
+	ft_putchar_fd((char)ft_optopt, 2);
+	ft_putendl_fd("", 2);
 	return('?');
 }
 
@@ -98,7 +98,10 @@ int		ft_getopt(int ac, char **av, const char *opt_str)
 			if (ft_optopt == '-')
 			{
 				ft_optind++;
-				return(-1);
+				if (*(*(av + tmp_ind) + char_index + 1) != '\0')
+					return(put_illegal_error(*(av + 0)));
+				else
+					return(-1);
 			}
 		}
 		if (ft_optopt == '-')
