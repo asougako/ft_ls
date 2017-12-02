@@ -9,8 +9,7 @@ void	print_error_malloc(int err_no)
 
 void	print_error_loop(char *file)
 {
-//	ft_putstr_fd("ft_ls: ", 2);
-	ft_putstr_fd("ls: ", 2);
+	ft_putstr_fd("ft_ls: ", 2);
 	ft_putstr_fd(file, 2);
 	ft_putendl_fd(": directory causes a cycle", 2);
 }
@@ -22,10 +21,8 @@ char	*str_error_access(char *err, char *file)
 
 	index = 0;
 	buff = ft_strnew(ft_strlen(err) + ft_strlen(file) + 9);
-//	ft_strcpy(buff + index, "ft_ls: ");
-//	index += 7;
-	ft_strcpy(buff + index, "ls: ");
-	index += 4;
+	ft_strcpy(buff + index, "ft_ls: ");
+	index += 7;
 	ft_strcpy(buff + index, file);
 	index += ft_strlen(file);
 	ft_strcpy(buff + index, ": ");

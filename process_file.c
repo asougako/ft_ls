@@ -193,17 +193,21 @@ void	get_suffixe(t_list *file_link)
 		index++;
 	}
 	if (reflnk != NULL)
-		ft_strcpy(STR_SUFX + index, reflnk);
+	{
+		ft_strcpy(STR_SUFX + 0, reflnk);
+	}
 	ft_strdel(&type);
 	ft_strdel(&reflnk);
 }
 
 #define C_NORMAL		"\e[0m"
+#define C_RED			"\e[0;31m"
+#define C_GREEN			"\e[0;32m"
+#define C_YELLOW		"\e[0;33m"
+#define C_PURPLE		"\e[0;35m"
 #define C_CYAN			"\e[1;36m"
 #define C_BLUE_YELLOW	"\e[43;34m"
 #define C_BLUE_CYAN		"\e[46;34m"
-#define C_PURPLE		"\e[0;35m"
-#define C_RED			"\e[0;31m"
 #define C_BACK_RED		"\e[41;30m"
 #define C_BACK_CYAN		"\e[46;30m"
 #define C_BLACK_GREEN	"\e[42;30m"
@@ -221,6 +225,10 @@ char	*color_name(t_list	*file_link, char *name)
 
 	if (S_ISDIR(FILE_TYPE) && (FILE_TYPE & S_IWOTH) && (FILE_TYPE & S_ISVTX))
 		color = ft_strdup(C_BLACK_GREEN);
+	else if (S_ISFIFO(FILE_TYPE))	//p
+		color = ft_strdup(C_YELLOW);
+	else if (S_ISSOCK(FILE_TYPE))	//s
+		color = ft_strdup(C_GREEN);
 	else if (S_ISDIR(FILE_TYPE) && (FILE_TYPE & S_IWOTH))	//d
 		color = ft_strdup(C_BLACK_YELLOW);
 	else if (S_ISDIR(FILE_TYPE))	//d
@@ -231,6 +239,7 @@ char	*color_name(t_list	*file_link, char *name)
 		color = ft_strdup(C_BLUE_YELLOW);
 	else if (S_ISLNK(FILE_TYPE))	//l
 		color = ft_strdup(C_PURPLE);
+
 	else if ((FILE_TYPE & S_ISUID) && (FILE_TYPE & S_IXUSR))
 		color = ft_strdup(C_BACK_RED);
 	else if ((FILE_TYPE & S_ISGID) && (FILE_TYPE & S_IXGRP))

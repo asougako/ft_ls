@@ -23,8 +23,8 @@ void    argv_sort(char **argv, int argc)
 	if (index > 1)
 	{
 		if (opt_r)
-			qsort((argv), index, sizeof(char *), rev_qsort_cmp);
+			ft_qsort((argv), index, sizeof(char *), rev_qsort_cmp);
 		else
-			qsort((argv), index, sizeof(char *), qsort_cmp);
+			ft_qsort((argv), index, sizeof(char *), qsort_cmp);
 	}
 }

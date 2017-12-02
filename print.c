@@ -29,6 +29,25 @@ void    print_file_lst(t_list *file_lst)
 	}
 }
 
+size_t		ft_strlen_color(const char *str)
+{
+	size_t	size;
+	char	*tmp;
+
+	size = 0;
+	tmp = str;
+	while (*str)
+	{
+		if (*str == '033');
+
+
+
+		size++;
+		str++;
+	}
+	return(size);
+}
+
 #define FILE_NAME (*(t_xstat*)(*file_lst).content).str_name
 int	get_name_max_size(t_list *file_lst)
 {
@@ -215,7 +234,7 @@ void    print_file_lst_short_across(t_list *file_lst)
 	else
 		padd = ' ';
 	buff = ft_strnew(w.ws_col);
-	buff = memset(buff, padd, w.ws_col);
+	buff = ft_memset(buff, padd, w.ws_col);
 	index = 0;
 	while (file_lst != NULL)
 	{
@@ -223,7 +242,7 @@ void    print_file_lst_short_across(t_list *file_lst)
 		if (index >= (w.ws_col / colw) - 1)
 		{
 			ft_putendl(buff);
-			buff = memset(buff, padd, w.ws_col);
+			buff = ft_memset(buff, padd, w.ws_col);
 			index = 0;
 		}
 		else

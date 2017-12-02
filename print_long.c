@@ -6,7 +6,7 @@
 /*   By: asougako <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/28 14:17:53 by asougako          #+#    #+#             */
-/*   Updated: 2017/12/01 19:15:28 by asougako         ###   ########.fr       */
+/*   Updated: 2017/12/02 14:52:49 by asougako         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -223,12 +223,14 @@ char	*get_rights(t_list *link)
 	char *ret;
 
 	ret = ft_strnew(11);
+	*(ret + 0) = '-';
+	S_ISFIFO(FILE_TYPE) ? *(ret + 0) = 'p' : 0;
+	S_ISCHR(FILE_TYPE)  ? *(ret + 0) = 'c' : 0;
 	S_ISDIR(FILE_TYPE)  ? *(ret + 0) = 'd' : 0;
+	S_ISBLK(FILE_TYPE)  ? *(ret + 0) = 'b' : 0;
 	S_ISREG(FILE_TYPE)  ? *(ret + 0) = '-' : 0;
 	S_ISLNK(FILE_TYPE)  ? *(ret + 0) = 'l' : 0;
-	S_ISCHR(FILE_TYPE)  ? *(ret + 0) = 'c' : 0;
-	S_ISBLK(FILE_TYPE)  ? *(ret + 0) = 'b' : 0;
-	S_ISFIFO(FILE_TYPE) ? *(ret + 0) = 'p' : 0;
+	S_ISSOCK(FILE_TYPE) ? *(ret + 0) = 's' : 0;
 
 	*(ret + 1) = FILE_TYPE & S_IRUSR ? 'r' : '-';
 	*(ret + 2) = FILE_TYPE & S_IWUSR ? 'w' : '-';

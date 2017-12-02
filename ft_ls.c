@@ -1,5 +1,6 @@
 
-// ls -i .
+//	color fifo
+//	ls -i .
 
 /*base opts:
 x	-l	List in long format.  (See below.)  If the output is to a ter-
@@ -103,12 +104,10 @@ t_bool opt_U;
 t_bool opt_u;
 t_bool opt_x;
 
-//#define VALID_OPT "@1AaCcdeFfGgHhIikLlmnoPpRrSTtuUx"
-#define VALID_OPT "-ABCFGHLOPRSTUWabcdefghiklmnopqrstuwx1"
+#define VALID_OPT "AFGHILPRSTUacdefghiklmnoprtux1@"
 void	put_synopsis(void)
 {
-//	ft_putstr_fd("usage: ft_ls [-", 2);
-	ft_putstr_fd("usage: ls [-", 2);
+	ft_putstr_fd("usage: ft_ls [-", 2);
 	ft_putstr_fd(VALID_OPT, 2);
 	ft_putendl_fd("] [file ...]", 2);
 	exit(EXIT_FAILURE);
@@ -145,6 +144,7 @@ void	get_options(int argc, char *argv[])
 		if (opt == 'c')
 		{
 			opt_c = true;
+			opt_U = false;
 			opt_u = false;
 		}
 		if (opt == 'd')
@@ -152,13 +152,23 @@ void	get_options(int argc, char *argv[])
 		if (opt == 'e')
 			opt_e = true;
 		if (opt == 'F')
+		{
 			opt_F = true;
+			opt_p = false;
+		}
 		if (opt == 'f')
 			opt_f = true;
 		if (opt == 'G')
 			opt_G = true;
 		if (opt == 'g')
+		{
 			opt_g = true;
+			opt_l = true;
+			opt_C = false;
+			opt_1 = false;
+			opt_m = false;
+			opt_x = false;
+		}
 		if (opt == 'H')
 			opt_H = true;
 		if (opt == 'h')
@@ -190,11 +200,21 @@ void	get_options(int argc, char *argv[])
 		if (opt == 'n')
 			opt_n = true;
 		if (opt == 'o')
+		{
 			opt_o = true;
+			opt_l = true;
+			opt_C = false;
+			opt_1 = false;
+			opt_m = false;
+			opt_x = false;
+		}
 		if (opt == 'P')
 			opt_P = true;
 		if (opt == 'p')
+		{
 			opt_p = true;
+			opt_F = false;
+		}
 		if (opt == 'R')
 			opt_R = true;
 		if (opt == 'r')
@@ -206,11 +226,16 @@ void	get_options(int argc, char *argv[])
 		if (opt == 't')
 			opt_t = true;
 		if (opt == 'U')
+		{
 			opt_U = true;
+			opt_c = false;
+			opt_u = false;
+		}
 		if (opt == 'u')
 		{
 			opt_u = true;
 			opt_c = false;
+			opt_U = false;
 		}
 		if (opt == 'x')
 		{
@@ -233,8 +258,6 @@ int		main(int argc, char **argv)
 	get_options(argc, argv);
 
 	implicit_opts();
-
-	opt_1 = true;
 
 	if (opt_I)
 	{
