@@ -1,7 +1,4 @@
 
-//	color fifo
-//	ls -i .
-
 /*base opts:
 x	-l	List in long format.  (See below.)  If the output is to a ter-
 			minal, a total sum for all the file sizes is output on a line before the long listing.
@@ -104,7 +101,7 @@ t_bool opt_U;
 t_bool opt_u;
 t_bool opt_x;
 
-#define VALID_OPT "AFGHILPRSTUacdefghiklmnoprtux1@"
+#define VALID_OPT "ACFGHILPRSTUacdefghiklmnoprtux1@"
 void	put_synopsis(void)
 {
 	ft_putstr_fd("usage: ft_ls [-", 2);
@@ -282,6 +279,18 @@ int		main(int argc, char **argv)
 	{
 		process_args(argv + ft_optind, argc);
 	}
+
+	char	*str;
+	int		size;
+
+//	printf("\n");
+
+	str = ft_strdup("\e[42;30mabcdefg\e[0m");
+	size = (int)ft_strlen_color(str);
+
+//	pf(str, s);
+//	pf(size, d);
+
 	return (0);
 }
 

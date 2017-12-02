@@ -103,6 +103,16 @@ typedef struct		s_tab_format
 	uint32_t	*col_width;
 }				t_tab_format;
 
+typedef struct	s_print
+{
+				struct winsize	w;
+				int				colw;
+				int				index_nc;
+				int				index_wc;
+				char			*buff;
+				char			padd;
+}				t_print;
+
 typedef struct	s_col_max_width
 {
 	uint16_t	inode_w;
@@ -171,6 +181,7 @@ char    *get_date(t_list *link);
 char    *acl_get(t_list *link);
 char	*get_referred_link(t_list *file_link);
 void    put_help(void);
+size_t      ft_strlen_color(const char *str);
 
 //error
 char    *av0(char **argv);
